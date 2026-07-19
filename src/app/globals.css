@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+:root {
+  --background: oklch(0.985 0.002 247.84);
+  --foreground: oklch(0.208 0.016 264.42);
+  --brand-primary: oklch(0.278 0.029 256.85);
+  --brand-primary-foreground: oklch(0.985 0.002 247.84);
+  --brand-surface: oklch(0.945 0.011 247.9);
+  --brand-surface-foreground: oklch(0.278 0.029 256.85);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.208 0.016 264.42);
+  --muted: oklch(0.955 0.006 247.9);
+  --muted-foreground: oklch(0.51 0.025 257.6);
+  --border: oklch(0.892 0.011 247.9);
+  --input: oklch(0.892 0.011 247.9);
+  --ring: oklch(0.492 0.042 257.1);
+  --destructive: oklch(0.577 0.217 27.33);
+  --success: oklch(0.527 0.154 150.07);
+  --warning: oklch(0.666 0.162 75.45);
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-foreground: var(--brand-primary-foreground);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-surface-foreground: var(--brand-surface-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --font-sans: var(--font-geist-sans);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+}
