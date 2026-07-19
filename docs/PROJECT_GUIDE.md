@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its current baseline includes the Supabase v1 schema, staff authentication, protected routes, and administrator staff management; operational CRM and workflow screens remain pending.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, protected routes, administrator staff management, customer and vehicle CRM, and service catalog management. Appointment, work-order, inventory, and invoicing workflows remain pending.
 
 ## 2. Main Features
 
@@ -103,7 +103,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation and data/auth/RBAC phases establish project structure, Supabase schema, security baseline, staff access lifecycle, and local development workflow. The next phase adds customer and vehicle CRM workflows.
+The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM, and service catalog phases establish the secure operational baseline. The next phase adds appointment and work-order workflows.
 
 ## 12. Troubleshooting
 

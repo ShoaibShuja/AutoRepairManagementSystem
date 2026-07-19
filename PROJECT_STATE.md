@@ -2,8 +2,8 @@
 
 Last updated: 2026-07-20
 Current phase: Data, authentication, RBAC, authenticated UI, CRM, and service catalog
-Current branch: feat/crm-service-catalog
-Current status: Supabase schema v1, staff authentication, protected routes, administrator staff management, and the responsive authenticated application shell are implemented.
+Current branch: feat/work-orders
+Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, customer and vehicle CRM, and service catalog management are implemented. Work-order implementation is not yet complete.
 
 ## Working Features
 
@@ -36,10 +36,11 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 
 - Added local Supabase CLI configuration, safe demo seed catalog/inventory data, and reset/type-generation scripts.
 - Added server-side role helpers, an admin-only service-role client, auth/server actions, and basic protected staff administration.
+- Added role-safe customer/vehicle CRUD, archive and restore flows, normalized customer/phone/plate searches, and service catalog management. Active vehicle plates are unique while archived vehicles no longer reserve their plate.
 
 ## Tests and Quality Checks
 
-- Passed on 2026-07-20: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check` after the RBAC implementation.
+- Passed on 2026-07-20 after CRM/catalog delivery: `npm run lint`, `npm run typecheck`, `npm test` (13 tests), `npm run build`, and `git diff --check`.
 - Local Supabase migrations could not be applied in this environment because Docker Desktop is not running. Run `npm run supabase:start` then `npm run supabase:reset` before connecting a remote project.
 
 ## Known Issues and Technical Debt
