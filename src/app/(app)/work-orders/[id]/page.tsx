@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CurrencyDisplay, EmptyState, PageHeader, StatusBadge } from "@/components/operational";
 import { addTechnicianNoteForm, transitionWorkOrder } from "@/features/work-orders/actions";
 import { WorkOrderForm } from "@/features/work-orders/work-order-form";
+import { PartUsage } from "@/features/inventory/part-usage";
 import { canTransitionWorkOrder } from "@/features/work-orders/validation";
 import { requireStaff } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
@@ -18,6 +19,10 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
   if (!order) notFound();
   const typed = order as any;
   const { data: activityRows } = await supabase.from("activity_log").select("id, action, after_data, created_at").eq("entity_type", "work_order").eq("entity_id", id).order("created_at", { ascending: false });
+  const [{ data: availableParts }, { data: usedPartRows }] = await Promise.all([
+    supabase.from("parts").select("id, name, sku, quantity_on_hand, unit").is("archived_at", null).order("name"),
+    supabase.from("work_order_parts").select("id, quantity, part_name_snapshot, unit_snapshot, reversed_at").eq("work_order_id", id),
+  ]);
   const activity = (activityRows ?? []) as Array<{ id: string; action: string; created_at: string }>;
   const canEdit = staff.role !== "technician" && ["draft", "assigned"].includes(typed.status);
   const inputs = canEdit ? await Promise.all([supabase.from("customers").select("id, full_name, phone").is("archived_at", null), supabase.from("vehicles").select("id, customer_id, plate_number, make, model").is("archived_at", null), supabase.from("service_catalog").select("id,name,description,standard_price_minor").is("archived_at", null), supabase.from("profiles").select("id,display_name").eq("role", "technician").eq("account_status", "active")]) : null;
@@ -28,6 +33,7 @@ export default async function WorkOrderDetail({ params }: { params: Promise<{ id
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="space-y-6">
         <section className="rounded-lg border bg-card p-5"><h2 className="font-semibold">Customer concern</h2><p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{typed.intake_notes || "No concern recorded."}</p><h2 className="mt-5 font-semibold">Services</h2><ul className="mt-2 space-y-2">{typed.work_order_services.map((service: any) => <li className="rounded-md border p-3" key={service.id}><div className="flex justify-between gap-3"><span className="font-medium">{service.service_name_snapshot}</span><CurrencyDisplay amount={service.unit_price_minor * Number(service.quantity)} /></div><p className="mt-1 text-sm text-muted-foreground">{service.service_description_snapshot || "No description"}</p></li>)}</ul><p className="mt-3 text-right font-semibold">Total: <CurrencyDisplay amount={total} /></p></section>
+        <PartUsage workOrderId={typed.id} canUse={staff.role !== "technician" || typed.assigned_technician_id === staff.id} parts={(availableParts ?? []).map((part) => ({ id:String(part.id),name:String(part.name),sku:part.sku == null ? null : String(part.sku),stock:Number(part.quantity_on_hand),unit:String(part.unit) }))} used={(usedPartRows ?? []).map((line) => ({ id:String(line.id),name:String(line.part_name_snapshot),quantity:Number(line.quantity),unit:String(line.unit_snapshot),reversed:Boolean(line.reversed_at) }))} />
         {canEdit && inputs ? <WorkOrderForm customers={(inputs[0].data ?? []).map((item) => ({ id:item.id, fullName:item.full_name, phone:item.phone }))} vehicles={(inputs[1].data ?? []).map((item) => ({ id:item.id, customerId:item.customer_id, label:[item.make,item.model].filter(Boolean).join(" ") || "Vehicle", plate:item.plate_number }))} services={(inputs[2].data ?? []).map((item) => ({ id:item.id, name:item.name, description:item.description, price:item.standard_price_minor }))} technicians={(inputs[3].data ?? []).map((item) => ({ id:item.id,name:item.display_name }))} workOrder={{ id:typed.id, customerId:typed.customer_id, vehicleId:typed.vehicle_id, technicianId:typed.assigned_technician_id, concern:typed.intake_notes, internalNotes:typed.technical_notes, estimatedCompletionAt:typed.estimated_completion_at, mileage:typed.reported_mileage, serviceIds:typed.work_order_services.map((service:any) => service.service_catalog_id).filter(Boolean) }} /> : null}
         {staff.role === "technician" ? <TechnicianNoteForm workOrderId={typed.id} /> : null}
       </div>
