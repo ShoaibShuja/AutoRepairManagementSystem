@@ -34,7 +34,7 @@ Current status: Application foundation implemented; Supabase schema and business
 
 ## Tests and Quality Checks
 
-- Expected foundation checks: `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`.
+- Passed on 2026-07-20: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check`.
 - Playwright foundation is available through `npm run test:e2e`; browser installation is a local prerequisite.
 
 ## Known Issues and Technical Debt
