@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, protected routes, administrator staff management, customer and vehicle CRM, and service catalog management. Appointment, work-order, inventory, and invoicing workflows remain pending.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, protected routes, CRM, service catalog, and controlled work-order management. Appointment, inventory, and invoicing workflows remain pending.
 
 ## 2. Main Features
 
@@ -50,7 +50,7 @@ npm run supabase:types
 - `app`: thin Next.js route entry points required by the starter. They delegate to `src/app`.
 - `src/app`: implementations for pages, layouts, loading states, and route-level error handling.
 - `src/components`: reusable application components. `src/components/app-shell` owns protected navigation and shell behavior; `src/components/operational` owns shared page, state, display, form, table, filter, and dialog primitives; `src/components/ui` contains shadcn-compatible UI primitives.
-- `src/features`: future domain modules such as appointments, customers, and inventory. Keep feature-specific UI, schemas, actions, and queries together here.
+- `src/features`: domain modules including `crm` and `work-orders`; keep feature-specific UI, schemas, actions, and queries together here.
 - `src/lib`: shared utilities, environment validation, formatting helpers, and Supabase client factories.
 - `src/config`: central application-wide configuration.
 - `src/types`: shared TypeScript types. Supabase-generated database types will live here after the first migration phase.
@@ -78,6 +78,14 @@ Admin and front-desk staff manage customers at `/customers`. Search accepts a cu
 
 All staff can browse the service catalog at `/services`; only administrators can create, edit, archive, or reactivate services. Catalog prices are stored in integer minor units. Editing a catalog service never alters `work_order_services` snapshots, which keep their own service name and unit price.
 
+## 7.3 Work orders, technician workspace, and vehicle history
+
+Admin and front-desk staff manage work orders at `/work-orders`. Creation verifies customer/vehicle ownership, requires active catalog services, and captures service name, description, and integer-minor-unit price snapshots. Work-order numbers are identity-backed and rendered as `WO-000001`. Price adjustment is intentionally unavailable in this phase.
+
+The lifecycle is `draft → assigned → in_progress → ready_for_review → completed → invoiced`, with cancellation from active operational states. Security-definer RPCs enforce transitions. Technicians can only transition their own assigned work from `assigned` to `in_progress` and from `in_progress` to `ready_for_review`; notes are appended only through a scoped RPC. Concise activity records cover creation, assignment, service changes, transitions, completion, cancellation, and technician notes.
+
+Technicians use `/my-work` for active assigned jobs only. It contains vehicle context, concerns, services, notes, permitted actions, and explicit parts/photo placeholders. `/vehicles/[id]` shows authorized history with date, services, technician, mileage, status, concern, and work-order link.
+
 ## 8. Database and Supabase
 
 Required browser-safe variables:
@@ -103,7 +111,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM, and service catalog phases establish the secure operational baseline. The next phase adds appointment and work-order workflows.
+The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, and work-order phases establish the secure operational baseline. The next phase adds appointments, followed by inventory and invoicing.
 
 ## 12. Troubleshooting
 

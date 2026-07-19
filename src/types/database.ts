@@ -131,6 +131,10 @@ export type Database = {
       is_active_staff: { Args: Record<string, never>; Returns: boolean };
       has_role: { Args: { allowed_roles: StaffRole[] }; Returns: boolean };
       is_assigned_technician: { Args: { target_work_order_id: string }; Returns: boolean };
+      create_work_order: { Args: { target_customer_id: string; target_vehicle_id: string; target_technician_id: string | null; concern: string | null; internal_note: string | null; estimated_completion: string | null; intake_mileage: number | null; selected_services: Json }; Returns: string };
+      update_work_order_details: { Args: { target_work_order_id: string; target_technician_id: string | null; concern: string | null; internal_note: string | null; estimated_completion: string | null; intake_mileage: number | null; selected_services: Json }; Returns: undefined };
+      transition_work_order: { Args: { target_work_order_id: string; next_status: Database["public"]["Enums"]["work_order_status"]; note: string | null }; Returns: undefined };
+      add_technician_note: { Args: { target_work_order_id: string; note: string }; Returns: undefined };
     };
     Enums: {
       staff_role: StaffRole;
