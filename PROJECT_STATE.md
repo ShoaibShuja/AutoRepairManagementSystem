@@ -1,9 +1,9 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, and RBAC
-Current branch: feat/data-auth-rbac
-Current status: Supabase schema v1, staff authentication, protected routes, and administrator staff management are implemented.
+Current phase: Data, authentication, RBAC, and authenticated UI foundation
+Current branch: feat/ui-shell
+Current status: Supabase schema v1, staff authentication, protected routes, administrator staff management, and the responsive authenticated application shell are implemented.
 
 ## Working Features
 
@@ -11,6 +11,8 @@ Current status: Supabase schema v1, staff authentication, protected routes, and 
 - Administrator-only staff directory with account creation, role assignment, activation, and deactivation controls.
 - Shared TanStack Query provider and Sonner notification host.
 - Semantic, neutral light-mode Tailwind CSS token system and a shadcn-compatible Button primitive.
+- Responsive protected application shell with role-matched navigation, mobile navigation dialog, user menu, breadcrumb, skip link, dashboard placeholders, and route-level loading/error states.
+- Shared operational display, form, filter, search, table, pagination, responsive record-card, status, and accessible confirmation-dialog primitives.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -20,6 +22,7 @@ Current status: Supabase schema v1, staff authentication, protected routes, and 
 - Future domain code belongs in `src/features`; shared code belongs in `src/components`, `src/lib`, `src/config`, and `src/types`.
 - The service-role credential remains server-only and is used only by administrator-authorized staff provisioning and Auth suspension actions.
 - UI color values use semantic CSS variables. Approved brand colors can replace token values without component rewrites.
+- Replace the temporary light brand colors only in `src/app/globals.css` (`--brand-primary`, `--brand-primary-foreground`, `--brand-surface`, and `--brand-surface-foreground`). Feature components must consume semantic Tailwind token utilities.
 
 ## Database and Migrations
 
@@ -53,4 +56,4 @@ Current status: Supabase schema v1, staff authentication, protected routes, and 
 
 ## Next Recommended Task
 
-Implement customer and vehicle CRM: normalized search, customer/vehicle CRUD, notes, service-history foundations, and responsive list/detail UI.
+Implement customer and vehicle CRM: normalized search, customer/vehicle CRUD, notes, service-history foundations, and responsive list/detail UI using the shared operational components.

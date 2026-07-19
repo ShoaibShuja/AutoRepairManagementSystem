@@ -1,6 +1,10 @@
 import { appConfig } from "@/config/app";
 
-export function formatMoney(minorUnits: number, currency = appConfig.defaultCurrency, locale = "en-US") {
+export function formatMoney(
+  minorUnits: number,
+  currency: string = appConfig.defaultCurrency,
+  locale = "en-US",
+) {
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,

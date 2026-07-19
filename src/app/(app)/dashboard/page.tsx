@@ -1,29 +1,7 @@
-import Link from "next/link";
-
+import { EmptyState, PageHeader, SectionHeader, StatCard } from "@/components/operational/display";
 import { requireStaff } from "@/lib/auth/server";
 
 export default async function DashboardPage() {
   const staff = await requireStaff();
-  return (
-    <section className="space-y-6">
-      <div>
-        <p className="text-sm font-medium text-muted-foreground">
-          Signed in as {staff.role.replace("_", " ")}
-        </p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight">Operations workspace</h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">
-          Authentication and role protection are active. Operational modules will be added in the next
-          delivery phases.
-        </p>
-      </div>
-      {staff.role === "admin" ? (
-        <Link
-          className="inline-flex h-9 items-center rounded-md bg-brand-primary px-4 text-sm font-medium text-brand-primary-foreground"
-          href="/staff"
-        >
-          Manage staff
-        </Link>
-      ) : null}
-    </section>
-  );
+  return <section className="space-y-8"><PageHeader eyebrow={`Signed in as ${staff.role.replace("_", " ")}`} title="Operations workspace" description="Your daily queue will appear here as each operational module is connected."/><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Today's appointments" value="Unavailable" detail="Appointments are not configured yet."/><StatCard label="Active work" value="Unavailable" detail="Work orders are not configured yet."/><StatCard label="Stock alerts" value="Unavailable" detail="Inventory alerts are not configured yet."/><StatCard label="Today's revenue" value="Unavailable" detail="Invoices are not configured yet."/></div><div className="grid gap-6 xl:grid-cols-2"><section className="space-y-4"><SectionHeader title="Appointments" description="Today's scheduled customer visits."/><EmptyState title="No appointment data yet" description="Appointments will appear here once the scheduling workflow is available."/></section><section className="space-y-4"><SectionHeader title="Active work and stock" description="Operational alerts requiring attention."/><EmptyState title="No operational data yet" description="Work orders and inventory alerts will appear here when those modules are ready."/></section></div></section>;
 }

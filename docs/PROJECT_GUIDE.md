@@ -49,7 +49,7 @@ npm run supabase:types
 
 - `app`: thin Next.js route entry points required by the starter. They delegate to `src/app`.
 - `src/app`: implementations for pages, layouts, loading states, and route-level error handling.
-- `src/components`: reusable application components. `src/components/ui` contains shadcn-compatible UI primitives.
+- `src/components`: reusable application components. `src/components/app-shell` owns protected navigation and shell behavior; `src/components/operational` owns shared page, state, display, form, table, filter, and dialog primitives; `src/components/ui` contains shadcn-compatible UI primitives.
 - `src/features`: future domain modules such as appointments, customers, and inventory. Keep feature-specific UI, schemas, actions, and queries together here.
 - `src/lib`: shared utilities, environment validation, formatting helpers, and Supabase client factories.
 - `src/config`: central application-wide configuration.
@@ -64,7 +64,13 @@ Staff sign in at `/login` with their work email/password or a magic link. There 
 
 ## 7. Common Configuration Changes
 
-Update `src/config/app.ts` for application defaults such as business timezone and currency. Replace the temporary neutral semantic CSS tokens in `src/app/globals.css` when approved brand colors are supplied. Do not hard-code brand colors in components.
+Update `src/config/app.ts` for application defaults such as business timezone and currency. Replace the temporary light brand values in `src/app/globals.css`: `--brand-primary`, `--brand-primary-foreground`, `--brand-surface`, and `--brand-surface-foreground`. Keep every component on semantic token utilities; do not hard-code brand colors in components.
+
+## 7.1 Authenticated UI conventions
+
+Protected routes use the `(app)` layout and `AppShell`, which performs presentation-only role-aware navigation. Server-side `requireStaff` and `requireRole` remain authoritative. Use `PageHeader`, `SectionHeader`, `EmptyState`, `ErrorState`, `StatusBadge`, and loading skeletons for consistent operational screens. Use `DataTable` on desktop with `MobileRecordCard` alternatives on mobile. Shared dialogs provide Escape dismissal and a focused cancel action; destructive flows use `DestructiveActionDialog`.
+
+The authenticated shell has a desktop sidebar, tablet-safe content layout, and an accessible mobile navigation dialog. Each protected page must preserve a single `h1`, landmarks, visible focus, and honest loading, error, empty, and permission states.
 
 ## 8. Database and Supabase
 
