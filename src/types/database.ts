@@ -144,6 +144,10 @@ export type Database = {
       confirm_work_order_part_usage: { Args: { target_work_order_id: string; target_part_id: string; quantity: number }; Returns: string };
       reverse_work_order_part_usage: { Args: { target_work_order_part_id: string; reason: string }; Returns: string };
       create_part: { Args: { part_name: string; part_sku: string; part_category: string | null; part_unit: string; opening_quantity: number; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
+      create_invoice_from_work_order: { Args: { target_work_order_id: string }; Returns: string };
+      record_offline_payment: { Args: { target_invoice_id: string; payment_method: Database["public"]["Enums"]["payment_method"]; payment_reference: string | null; payment_notes: string | null }; Returns: string };
+      void_invoice: { Args: { target_invoice_id: string; reason: string }; Returns: undefined };
+      register_work_order_attachment: { Args: { target_vehicle_id: string; target_work_order_id: string; target_category: Database["public"]["Enums"]["attachment_category"]; target_path: string; target_filename: string; target_mime: string; target_bytes: number; target_caption: string | null }; Returns: string };
     };
     Enums: {
       staff_role: StaffRole;
