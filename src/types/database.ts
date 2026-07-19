@@ -139,6 +139,11 @@ export type Database = {
       reschedule_appointment: { Args: { target_appointment_id: string; target_starts_at: string; target_ends_at: string; expected_revision: number; allow_conflict: boolean }; Returns: undefined };
       transition_appointment: { Args: { target_appointment_id: string; next_status: Database["public"]["Enums"]["appointment_status"]; expected_revision: number }; Returns: undefined };
       convert_appointment_to_work_order: { Args: { target_appointment_id: string; expected_revision: number }; Returns: string };
+      restock_part: { Args: { target_part_id: string; quantity: number; reason: string | null }; Returns: string };
+      correct_inventory: { Args: { target_part_id: string; quantity_delta: number; reason: string }; Returns: string };
+      confirm_work_order_part_usage: { Args: { target_work_order_id: string; target_part_id: string; quantity: number }; Returns: string };
+      reverse_work_order_part_usage: { Args: { target_work_order_part_id: string; reason: string }; Returns: string };
+      create_part: { Args: { part_name: string; part_sku: string; part_category: string | null; part_unit: string; opening_quantity: number; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
     };
     Enums: {
       staff_role: StaffRole;

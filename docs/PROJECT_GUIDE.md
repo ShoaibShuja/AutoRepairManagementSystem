@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, CRM/catalog, work orders, and staff-managed appointments. Inventory and invoicing workflows remain pending.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes CRM/catalog, work orders, appointments, and immutable inventory tracking. Invoicing remains pending.
 
 ## 2. Main Features
 
@@ -94,6 +94,14 @@ The appointment lifecycle is `scheduled → checked_in → in_progress → compl
 
 Creating a work order from an appointment is atomic, prevents duplicate conversion, copies customer, vehicle, technician, requested services, and notes, links both records, and changes a scheduled appointment to checked in. Appointment queries and mutations are feature-scoped so Supabase Realtime can be added later without changing calendar components.
 
+## 7.5 Inventory and parts usage
+
+Admin and front-desk staff manage `/inventory`, including searchable/filterable paginated parts, optional SKU/category, unit, threshold, selling price, status, and low-stock filtering. Administrators also see and set authorized cost information. New parts create an initial-stock ledger movement; current stock cannot be edited afterward.
+
+Every restock, administrator correction, confirmed work-order use, and reversal creates an immutable `inventory_movements` row with the actor, timestamp, resulting quantity, and reason. Corrections require an administrator and reason. The database locks the part row, rejects negative resulting stock, rejects duplicate work-order use lines, and links usage to a work-order part snapshot. A technician may confirm/reverse use only for their assigned work order; front desk and administrators may do so for operational work. Archived parts cannot be newly used.
+
+Parts become used only when staff choose **Confirm use** in a work order. A correction to a confirmed line is a reversal that restores stock; historical lines and movements are never silently edited or deleted. Low stock is defined as `quantity_on_hand <= reorder_threshold`, is ready for dashboard queries, and has no supplier or purchase-order integration.
+
 ## 8. Database and Supabase
 
 Required browser-safe variables:
@@ -119,7 +127,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, work-order, and appointment phases establish the secure operational baseline. The next phase adds inventory, followed by invoicing.
+The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, work-order, appointment, and inventory phases establish the secure operational baseline. The next phase adds invoicing and offline payments.
 
 ## 12. Troubleshooting
 
