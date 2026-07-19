@@ -15,7 +15,7 @@ Current status: Application foundation implemented; Supabase schema and business
 
 ## Architecture and Important Decisions
 
-- App Router source code now lives under `src/` with the `@/*` alias resolving to `src/*`.
+- Root `app/` files remain thin App Router entry points for this starter; their implementations live in `src/app/`, and `@/*` resolves to `src/*`.
 - Future domain code belongs in `src/features`; shared code belongs in `src/components`, `src/lib`, `src/config`, and `src/types`.
 - Supabase service-role credentials are server-only and intentionally not used by the base client factories.
 - UI color values use semantic CSS variables. Approved brand colors can replace token values without component rewrites.

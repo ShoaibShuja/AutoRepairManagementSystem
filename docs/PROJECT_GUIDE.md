@@ -37,7 +37,8 @@ npm run test:e2e
 
 ## 5. Folder Structure
 
-- `src/app`: pages, layouts, loading states, and route-level error handling. These files define URLs.
+- `app`: thin Next.js route entry points required by the starter. They delegate to `src/app`.
+- `src/app`: implementations for pages, layouts, loading states, and route-level error handling.
 - `src/components`: reusable application components. `src/components/ui` contains shadcn-compatible UI primitives.
 - `src/features`: future domain modules such as appointments, customers, and inventory. Keep feature-specific UI, schemas, actions, and queries together here.
 - `src/lib`: shared utilities, environment validation, formatting helpers, and Supabase client factories.
