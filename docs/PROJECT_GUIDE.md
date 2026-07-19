@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product will support `admin`, `front_desk`, and `technician` roles. The initial foundation contains no business records, database schema, or authentication screens yet.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its current baseline includes the Supabase v1 schema, staff authentication, protected routes, and administrator staff management; operational CRM and workflow screens remain pending.
 
 ## 2. Main Features
 
@@ -54,7 +54,7 @@ npm run supabase:types
 - `src/lib`: shared utilities, environment validation, formatting helpers, and Supabase client factories.
 - `src/config`: central application-wide configuration.
 - `src/types`: shared TypeScript types. Supabase-generated database types will live here after the first migration phase.
-- `supabase/migrations`: versioned database migrations. It is intentionally empty until the schema phase.
+- `supabase/migrations`: versioned v1 schema and Storage-policy migrations. Add new migrations only; never modify an applied migration.
 - `tests`: unit/component tests and Playwright end-to-end tests.
 - `docs`: durable project documentation and the approved implementation blueprint.
 
@@ -83,7 +83,7 @@ To bootstrap the first administrator, use a secure server-only Supabase Auth Adm
 
 ## 9. Deployment
 
-Deploy to Vercel after configuring the browser-safe Supabase variables in the Vercel project. Add the service-role key only when a later server-only administrative operation explicitly needs it. CI runs installation, linting, type checking, unit tests, and a production build.
+Deploy to Vercel after configuring the browser-safe Supabase variables and the server-only service-role key in the Vercel project. CI runs installation, linting, type checking, unit tests, and a production build.
 
 ## 10. Maintenance and Backups
 
