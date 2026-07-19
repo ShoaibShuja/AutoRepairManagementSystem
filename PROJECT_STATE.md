@@ -1,9 +1,9 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, and work orders
+Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, work orders, and appointments
 Current branch: feat/work-orders
-Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog management, and role-scoped work-order workflows are implemented.
+Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, and staff appointment workflows are implemented.
 
 ## Working Features
 
@@ -15,6 +15,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Shared operational display, form, filter, search, table, pagination, responsive record-card, status, and accessible confirmation-dialog primitives.
 - Customer and vehicle records, archive/restore workflows, normalized name/phone/plate search, and a role-safe service catalog baseline.
 - Work-order creation with server-captured catalog service snapshots, controlled transitions, concise activity history, technician workspace, and vehicle work history.
+- Staff-managed appointment calendar with day/week interaction, mobile agenda, technician conflict controls, rescheduling, and work-order conversion.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -31,6 +32,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - `20260720000100_core_schema.sql` creates the v1 enums, profiles, singleton settings, CRM, scheduling, work-order, inventory, invoice, payment, attachment, and activity-log tables; it also adds normalization/audit/profile triggers, indexes, RLS, and Realtime publication.
 - `20260720000200_storage_policies.sql` creates private `vehicle-attachments` and `invoice-pdfs` buckets and path-aware storage policies.
 - `20260720000400_work_order_workflow.sql` adds estimated completion/mileage, service-description snapshots, atomic creation/edit RPCs, lifecycle transitions, technician notes, and activity events.
+- `20260720000500_appointment_workflow.sql` adds requested appointment services, assigned technicians, optimistic revisions, conflict checks, approved appointment transitions, and atomic work-order conversion.
 - All operational tables use RLS. Admin/front desk have operational access; technicians can read only assigned-work context. Inventory movements and activity logs are append-only.
 - `src/types/database.ts` is maintained against v1 and must be regenerated with `npm run supabase:types` after a local reset.
 
@@ -60,4 +62,4 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Next Recommended Task
 
-Implement appointments, then inventory and invoicing workflows.
+Implement inventory and invoicing workflows.

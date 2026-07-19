@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, protected routes, CRM, service catalog, and controlled work-order management. Appointment, inventory, and invoicing workflows remain pending.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes the Supabase v1 schema, staff authentication/RBAC, CRM/catalog, work orders, and staff-managed appointments. Inventory and invoicing workflows remain pending.
 
 ## 2. Main Features
 
@@ -86,6 +86,14 @@ The lifecycle is `draft → assigned → in_progress → ready_for_review → co
 
 Technicians use `/my-work` for active assigned jobs only. It contains vehicle context, concerns, services, notes, permitted actions, and explicit parts/photo placeholders. `/vehicles/[id]` shows authorized history with date, services, technician, mileage, status, concern, and work-order link.
 
+## 7.4 Appointment calendar and conversion
+
+Admin and front-desk staff use `/appointments` for a FullCalendar day/week view in the configured `Asia/Kabul` business timezone, with current-day, previous/next, date-picker navigation, drag/resize rescheduling, and a keyboard-accessible edit page. Mobile uses an agenda list. The appointment form selects an active customer, that customer's active vehicle, requested services, optional technician, local business times, and notes.
+
+The appointment lifecycle is `scheduled → checked_in → in_progress → completed`; staff can mark scheduled or checked-in appointments as `cancelled` or `no_show`. A technician overlap is blocked by default; only an administrator may explicitly override it. Revision numbers make edits, reschedules, transitions, and conversion reject stale concurrent changes.
+
+Creating a work order from an appointment is atomic, prevents duplicate conversion, copies customer, vehicle, technician, requested services, and notes, links both records, and changes a scheduled appointment to checked in. Appointment queries and mutations are feature-scoped so Supabase Realtime can be added later without changing calendar components.
+
 ## 8. Database and Supabase
 
 Required browser-safe variables:
@@ -111,7 +119,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, and work-order phases establish the secure operational baseline. The next phase adds appointments, followed by inventory and invoicing.
+The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, work-order, and appointment phases establish the secure operational baseline. The next phase adds inventory, followed by invoicing.
 
 ## 12. Troubleshooting
 

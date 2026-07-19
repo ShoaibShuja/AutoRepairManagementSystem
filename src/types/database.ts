@@ -135,11 +135,15 @@ export type Database = {
       update_work_order_details: { Args: { target_work_order_id: string; target_technician_id: string | null; concern: string | null; internal_note: string | null; estimated_completion: string | null; intake_mileage: number | null; selected_services: Json }; Returns: undefined };
       transition_work_order: { Args: { target_work_order_id: string; next_status: Database["public"]["Enums"]["work_order_status"]; note: string | null }; Returns: undefined };
       add_technician_note: { Args: { target_work_order_id: string; note: string }; Returns: undefined };
+      save_appointment: { Args: { target_appointment_id: string | null; target_customer_id: string; target_vehicle_id: string; target_technician_id: string | null; target_starts_at: string; target_ends_at: string; target_notes: string | null; selected_services: Json; expected_revision: number | null; allow_conflict: boolean }; Returns: string };
+      reschedule_appointment: { Args: { target_appointment_id: string; target_starts_at: string; target_ends_at: string; expected_revision: number; allow_conflict: boolean }; Returns: undefined };
+      transition_appointment: { Args: { target_appointment_id: string; next_status: Database["public"]["Enums"]["appointment_status"]; expected_revision: number }; Returns: undefined };
+      convert_appointment_to_work_order: { Args: { target_appointment_id: string; expected_revision: number }; Returns: string };
     };
     Enums: {
       staff_role: StaffRole;
       staff_account_status: StaffAccountStatus;
-      appointment_status: "scheduled" | "checked_in" | "cancelled" | "no_show";
+      appointment_status: "scheduled" | "checked_in" | "in_progress" | "completed" | "cancelled" | "no_show";
       work_order_status:
         "draft" | "assigned" | "in_progress" | "ready_for_review" | "completed" | "invoiced" | "cancelled";
       invoice_status: "issued" | "paid" | "void";
