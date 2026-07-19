@@ -135,7 +135,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation through offline invoicing establish the operational baseline. The next phase completes private attachment upload/preview UX and adds reporting.
+The foundation through offline invoicing establish the operational baseline. Basic dashboard metrics and date-range essential reports are available at `/dashboard` and `/reports`; technicians do not receive collected-revenue or unpaid-invoice metrics. Global search, scoped Realtime, optional email, and attachment browser UX remain pending.
 
 ## 12. Troubleshooting
 

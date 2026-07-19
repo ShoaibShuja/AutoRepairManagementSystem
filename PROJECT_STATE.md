@@ -2,8 +2,8 @@
 
 Last updated: 2026-07-20
 Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, work orders, appointments, inventory, and offline invoicing
-Current branch: feat/work-orders
-Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, appointment, and inventory workflows are implemented.
+Current branch: feat/operations-insights
+Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, appointment, inventory, offline invoicing, and basic daily operations reporting are implemented.
 
 ## Working Features
 
@@ -18,6 +18,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Staff-managed appointment calendar with day/week interaction, mobile agenda, technician conflict controls, rescheduling, and work-order conversion.
 - Immutable inventory movements, low-stock visibility, restock/correction operations, and confirmed work-order part usage with safe reversals.
 - Offline invoices with database-generated numbering, service/part snapshots, payment and void lifecycle, and browser print-to-PDF layout.
+- Role-scoped daily dashboard metrics and date-range essential operations reports.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -48,12 +49,12 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Tests and Quality Checks
 
-- Passed on 2026-07-20 after CRM/catalog delivery: `npm run lint`, `npm run typecheck`, `npm test` (13 tests), `npm run build`, and `git diff --check`.
+- Passed on 2026-07-20 after operations dashboard/report delivery: `npm run lint`, `npm run typecheck`, `npm test` (19 tests), `npm run build`, and `git diff --check`.
 - Local Supabase migrations could not be applied in this environment because Docker Desktop is not running. Run `npm run supabase:start` then `npm run supabase:reset` before connecting a remote project.
 
 ## Known Issues and Technical Debt
 
-- Appointment conversion, stock usage, invoicing, payments, and vehicle photo uploads are intentionally deferred to their operational phases.
+- Attachment upload/preview/delete UI, global search, scoped Supabase Realtime subscriptions, optional Resend email, and dedicated invoice/storage/reporting tests remain incomplete.
 - The maintained type baseline should be replaced by CLI-generated types after the first successful local database reset.
 - Final light-mode brand colors have not been supplied.
 
@@ -66,4 +67,4 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Next Recommended Task
 
-Complete attachment upload and signed-preview UI, then add operational reporting.
+Complete global search, scoped Supabase Realtime, optional Resend email, and private attachment upload/preview/delete UI.
