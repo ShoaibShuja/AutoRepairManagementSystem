@@ -1,8 +1,8 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, RBAC, and authenticated UI foundation
-Current branch: feat/ui-shell
+Current phase: Data, authentication, RBAC, authenticated UI, CRM, and service catalog
+Current branch: feat/crm-service-catalog
 Current status: Supabase schema v1, staff authentication, protected routes, administrator staff management, and the responsive authenticated application shell are implemented.
 
 ## Working Features
@@ -13,6 +13,7 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 - Semantic, neutral light-mode Tailwind CSS token system and a shadcn-compatible Button primitive.
 - Responsive protected application shell with role-matched navigation, mobile navigation dialog, user menu, breadcrumb, skip link, dashboard placeholders, and route-level loading/error states.
 - Shared operational display, form, filter, search, table, pagination, responsive record-card, status, and accessible confirmation-dialog primitives.
+- Customer and vehicle records, archive/restore workflows, normalized name/phone/plate search, and a role-safe service catalog baseline.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -56,4 +57,4 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 
 ## Next Recommended Task
 
-Implement customer and vehicle CRM: normalized search, customer/vehicle CRUD, notes, service-history foundations, and responsive list/detail UI using the shared operational components.
+Implement appointments and work orders, using customer, vehicle, and service snapshots from the CRM/catalog workflows.

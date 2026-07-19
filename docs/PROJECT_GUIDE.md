@@ -72,6 +72,12 @@ Protected routes use the `(app)` layout and `AppShell`, which performs presentat
 
 The authenticated shell has a desktop sidebar, tablet-safe content layout, and an accessible mobile navigation dialog. Each protected page must preserve a single `h1`, landmarks, visible focus, and honest loading, error, empty, and permission states.
 
+## 7.2 CRM and service catalog
+
+Admin and front-desk staff manage customers at `/customers`. Search accepts a customer name or normalized phone number; shared family phone numbers are permitted. Customer records contain contact details, operational notes, vehicles, timestamps, and archive/restore controls. Vehicle records include plate, make, model, year, color, optional VIN and dated mileage, notes, archive/restore, and a work-order history placeholder. Active plate numbers are unique within the shop; archived vehicles no longer reserve a plate.
+
+All staff can browse the service catalog at `/services`; only administrators can create, edit, archive, or reactivate services. Catalog prices are stored in integer minor units. Editing a catalog service never alters `work_order_services` snapshots, which keep their own service name and unit price.
+
 ## 8. Database and Supabase
 
 Required browser-safe variables:

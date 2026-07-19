@@ -10,8 +10,8 @@ vi.mock("next/link", () => ({
 vi.mock("@/features/auth/actions", () => ({ signOut: vi.fn() }));
 describe("authenticated UI foundation", () => {
   it("limits navigation visibility by staff role", () => {
-    expect(getNavigationForRole("admin").map((item) => item.href)).toEqual(["/dashboard", "/staff"]);
-    expect(getNavigationForRole("front_desk").map((item) => item.href)).toEqual(["/dashboard"]);
+    expect(getNavigationForRole("admin").map((item) => item.href)).toEqual(["/dashboard", "/customers", "/services", "/staff"]);
+    expect(getNavigationForRole("front_desk").map((item) => item.href)).toEqual(["/dashboard", "/customers", "/services"]);
     expect(getNavigationForRole("technician").map((item) => item.href)).toEqual(["/dashboard"]);
   });
   it("renders shared status and empty states", () => {

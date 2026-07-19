@@ -21,6 +21,57 @@ type Profile = {
   created_by: string | null;
   updated_by: string | null;
 };
+type Customer = {
+  id: string;
+  full_name: string;
+  name_normalized: string;
+  phone: string | null;
+  phone_normalized: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  archived_at: string | null;
+  archived_by: string | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  updated_by: string | null;
+};
+type Vehicle = {
+  id: string;
+  customer_id: string;
+  plate_number: string | null;
+  plate_normalized: string | null;
+  vin: string | null;
+  make: string | null;
+  model: string | null;
+  model_year: number | null;
+  color: string | null;
+  mileage: number | null;
+  mileage_recorded_at: string | null;
+  notes: string | null;
+  archived_at: string | null;
+  archived_by: string | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  updated_by: string | null;
+};
+type Service = {
+  id: string;
+  name: string;
+  name_normalized: string;
+  category: string | null;
+  description: string | null;
+  standard_price_minor: number;
+  default_duration_minutes: number;
+  archived_at: string | null;
+  archived_by: string | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  updated_by: string | null;
+};
 
 export type Database = {
   public: {
@@ -35,9 +86,33 @@ export type Database = {
         Relationships: [];
       };
       business_settings: GenericTable;
-      customers: GenericTable;
-      vehicles: GenericTable;
-      service_catalog: GenericTable;
+      customers: {
+        Row: Customer;
+        Insert: Partial<
+          Omit<Customer, "id" | "name_normalized" | "created_at" | "updated_at" | "created_by" | "updated_by">
+        > &
+          Pick<Customer, "full_name">;
+        Update: Partial<Omit<Customer, "id" | "created_at">>;
+        Relationships: [];
+      };
+      vehicles: {
+        Row: Vehicle;
+        Insert: Partial<
+          Omit<Vehicle, "id" | "plate_normalized" | "created_at" | "updated_at" | "created_by" | "updated_by">
+        > &
+          Pick<Vehicle, "customer_id">;
+        Update: Partial<Omit<Vehicle, "id" | "created_at">>;
+        Relationships: [];
+      };
+      service_catalog: {
+        Row: Service;
+        Insert: Partial<
+          Omit<Service, "id" | "name_normalized" | "created_at" | "updated_at" | "created_by" | "updated_by">
+        > &
+          Pick<Service, "name" | "standard_price_minor">;
+        Update: Partial<Omit<Service, "id" | "created_at">>;
+        Relationships: [];
+      };
       appointments: GenericTable;
       work_orders: GenericTable;
       work_order_services: GenericTable;
