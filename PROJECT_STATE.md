@@ -1,7 +1,7 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, work orders, appointments, and inventory
+Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, work orders, appointments, inventory, and offline invoicing
 Current branch: feat/work-orders
 Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, appointment, and inventory workflows are implemented.
 
@@ -17,6 +17,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Work-order creation with server-captured catalog service snapshots, controlled transitions, concise activity history, technician workspace, and vehicle work history.
 - Staff-managed appointment calendar with day/week interaction, mobile agenda, technician conflict controls, rescheduling, and work-order conversion.
 - Immutable inventory movements, low-stock visibility, restock/correction operations, and confirmed work-order part usage with safe reversals.
+- Offline invoices with database-generated numbering, service/part snapshots, payment and void lifecycle, and browser print-to-PDF layout.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -35,6 +36,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - `20260720000400_work_order_workflow.sql` adds estimated completion/mileage, service-description snapshots, atomic creation/edit RPCs, lifecycle transitions, technician notes, and activity events.
 - `20260720000500_appointment_workflow.sql` adds requested appointment services, assigned technicians, optimistic revisions, conflict checks, approved appointment transitions, and atomic work-order conversion.
 - `20260720000600_inventory_workflow.sql` adds optional SKUs/categories, immutable inventory RPCs, initial-stock ledger entries, stock locks, usage reversals, and invoice-ready work-order part snapshots.
+- `20260720000700_invoicing_files.sql` adds atomic invoice generation, offline payments, invoice voiding, and private attachment registration constraints.
 - All operational tables use RLS. Admin/front desk have operational access; technicians can read only assigned-work context. Inventory movements and activity logs are append-only.
 - `src/types/database.ts` is maintained against v1 and must be regenerated with `npm run supabase:types` after a local reset.
 
@@ -64,4 +66,4 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Next Recommended Task
 
-Implement invoice and offline-payment workflows.
+Complete attachment upload and signed-preview UI, then add operational reporting.

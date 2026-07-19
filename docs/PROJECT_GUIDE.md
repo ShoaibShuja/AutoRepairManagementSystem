@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes CRM/catalog, work orders, appointments, and immutable inventory tracking. Invoicing remains pending.
+AutoCare Pro is a staff-only, single-location operations system for a car wash and auto repair business. The product supports `admin`, `front_desk`, and `technician` roles. Its baseline includes CRM/catalog, work orders, appointments, inventory, and offline invoicing.
 
 ## 2. Main Features
 
@@ -102,6 +102,14 @@ Every restock, administrator correction, confirmed work-order use, and reversal 
 
 Parts become used only when staff choose **Confirm use** in a work order. A correction to a confirmed line is a reversal that restores stock; historical lines and movements are never silently edited or deleted. Low stock is defined as `quantity_on_hand <= reorder_threshold`, is ready for dashboard queries, and has no supplier or purchase-order integration.
 
+## 7.6 Invoices, payments, printing, and private files
+
+Staff create an invoice only from a completed work order. A database function allocates the configured invoice sequence, snapshots service and non-reversed part lines, calculates integer-minor-unit totals, records the business currency, and prevents a second active invoice for the same work order. The approved simple tax model is no additional tax or discount calculation.
+
+Invoices move from `issued` to `paid` after a single full offline cash or card-in-person payment, or may be voided with a required reason while unpaid. Invoice detail uses a print-first layout compatible with browser Print-to-PDF; no generated PDF is stored because browser printing is sufficient and avoids duplicate private files.
+
+Vehicle attachment buckets remain private, with Storage policies restricted to operational staff and assigned technicians. The `register_work_order_attachment` RPC validates authorized work-order paths, categories, mime type, and 10 MB maximum metadata before creating the attachment record. The browser upload/preview UI remains a follow-up task.
+
 ## 8. Database and Supabase
 
 Required browser-safe variables:
@@ -127,7 +135,7 @@ Never change an applied migration. Add a new migration for every database change
 
 ## 11. Development Phases and Major Changes
 
-The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation, data/auth/RBAC, authenticated UI, CRM/catalog, work-order, appointment, and inventory phases establish the secure operational baseline. The next phase adds invoicing and offline payments.
+The approved delivery roadmap is in [IMPLEMENTATION_BLUEPRINT.md](./IMPLEMENTATION_BLUEPRINT.md). The foundation through offline invoicing establish the operational baseline. The next phase completes private attachment upload/preview UX and adds reporting.
 
 ## 12. Troubleshooting
 
