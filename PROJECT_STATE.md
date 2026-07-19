@@ -1,9 +1,9 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, RBAC, authenticated UI, CRM, and service catalog
-Current branch: feat/crm-service-catalog
-Current status: Supabase schema v1, staff authentication, protected routes, administrator staff management, and the responsive authenticated application shell are implemented.
+Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, and work orders
+Current branch: feat/work-orders
+Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog management, and role-scoped work-order workflows are implemented.
 
 ## Working Features
 
@@ -14,6 +14,7 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 - Responsive protected application shell with role-matched navigation, mobile navigation dialog, user menu, breadcrumb, skip link, dashboard placeholders, and route-level loading/error states.
 - Shared operational display, form, filter, search, table, pagination, responsive record-card, status, and accessible confirmation-dialog primitives.
 - Customer and vehicle records, archive/restore workflows, normalized name/phone/plate search, and a role-safe service catalog baseline.
+- Work-order creation with server-captured catalog service snapshots, controlled transitions, concise activity history, technician workspace, and vehicle work history.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
@@ -29,6 +30,7 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 
 - `20260720000100_core_schema.sql` creates the v1 enums, profiles, singleton settings, CRM, scheduling, work-order, inventory, invoice, payment, attachment, and activity-log tables; it also adds normalization/audit/profile triggers, indexes, RLS, and Realtime publication.
 - `20260720000200_storage_policies.sql` creates private `vehicle-attachments` and `invoice-pdfs` buckets and path-aware storage policies.
+- `20260720000400_work_order_workflow.sql` adds estimated completion/mileage, service-description snapshots, atomic creation/edit RPCs, lifecycle transitions, technician notes, and activity events.
 - All operational tables use RLS. Admin/front desk have operational access; technicians can read only assigned-work context. Inventory movements and activity logs are append-only.
 - `src/types/database.ts` is maintained against v1 and must be regenerated with `npm run supabase:types` after a local reset.
 
@@ -36,15 +38,16 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 
 - Added local Supabase CLI configuration, safe demo seed catalog/inventory data, and reset/type-generation scripts.
 - Added server-side role helpers, an admin-only service-role client, auth/server actions, and basic protected staff administration.
+- Added role-safe customer/vehicle CRUD, archive and restore flows, normalized customer/phone/plate searches, and service catalog management. Active vehicle plates are unique while archived vehicles no longer reserve their plate.
 
 ## Tests and Quality Checks
 
-- Passed on 2026-07-20: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, and `git diff --check` after the RBAC implementation.
+- Passed on 2026-07-20 after CRM/catalog delivery: `npm run lint`, `npm run typecheck`, `npm test` (13 tests), `npm run build`, and `git diff --check`.
 - Local Supabase migrations could not be applied in this environment because Docker Desktop is not running. Run `npm run supabase:start` then `npm run supabase:reset` before connecting a remote project.
 
 ## Known Issues and Technical Debt
 
-- Atomic stock, appointment-conversion, invoice, payment, and status-transition RPCs are intentionally deferred to the corresponding operational feature phases.
+- Appointment conversion, stock usage, invoicing, payments, and vehicle photo uploads are intentionally deferred to their operational phases.
 - The maintained type baseline should be replaced by CLI-generated types after the first successful local database reset.
 - Final light-mode brand colors have not been supplied.
 
@@ -57,4 +60,4 @@ Current status: Supabase schema v1, staff authentication, protected routes, admi
 
 ## Next Recommended Task
 
-Implement appointments and work orders, using customer, vehicle, and service snapshots from the CRM/catalog workflows.
+Implement appointments, then inventory and invoicing workflows.
