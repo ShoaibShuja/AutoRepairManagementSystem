@@ -142,6 +142,8 @@ npm run build
 4. Verify applied migration entries in Supabase migration history and run the production health check.
 5. Regenerate types against local schema after a local reset with `npm run supabase:types`; review and commit the generated type changes separately.
 
+`20260720000450_appointment_statuses.sql` must run and commit before `20260720000500_appointment_workflow.sql`. PostgreSQL does not allow a newly added enum value to be used by an index or function in the same transaction.
+
 If a deployment fails, stop new operational changes, keep the previous Vercel deployment available, inspect Vercel/Supabase logs, and fix forward with a new migration or application commit. Never edit or delete an applied migration, force-push, or manually alter migration history to “make it green.”
 
 ## Backups and maintenance
