@@ -1,6 +1,4 @@
 -- Staff appointment scheduling, conflict controls, and work-order conversion.
-alter type public.appointment_status add value if not exists 'in_progress' after 'checked_in';
-alter type public.appointment_status add value if not exists 'completed' after 'in_progress';
 alter table public.appointments add column assigned_technician_id uuid references public.profiles(id) on delete restrict;
 alter table public.appointments add column revision integer not null default 1 check (revision > 0);
 create table public.appointment_services (
