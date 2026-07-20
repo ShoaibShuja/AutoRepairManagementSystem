@@ -95,7 +95,7 @@ npm run test:e2e
 
 ### 2. Configure Vercel
 
-1. Import the repository and use the reviewed `release/v1.0.0` branch for staging. Promote only the reviewed merge commit from `main` after every release gate passes.
+1. Import the repository and use the reviewed `main` branch for staging. Promote the same reviewed commit to production only after every release gate passes.
 2. Vercel detects Next.js automatically. Use **Install Command** `npm ci`, **Build Command** `npm run build`, and Node.js **22**.
 3. Configure the variables for Production, Preview only when required, and Development as appropriate:
 
