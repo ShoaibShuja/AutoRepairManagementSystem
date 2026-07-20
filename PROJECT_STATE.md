@@ -2,8 +2,8 @@
 
 Last updated: 2026-07-20
 Current phase: Production hardening for data, authentication, RBAC, authenticated UI, CRM, catalog, work orders, appointments, inventory, and offline invoicing
-Current branch: feat/operations-insights
-Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, appointment, inventory, offline invoicing, and basic daily operations reporting are implemented.
+Current branch: docs/deployment-handoff
+Current status: Deployment and beginner-owner handoff documentation are prepared. Production deployment itself remains unverified until the owner configures Vercel, Supabase, Auth email, backups, and runs the release checks.
 
 ## Working Features
 
@@ -23,6 +23,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Production hardening revokes public RPC execution and direct protected-table writes, preserves an active administrator, prevents concurrent active technician appointments, and checks invoice line-item totals.
 - Money display converts stored integer minor units using the configured AFN precision; work-order search applies before pagination.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
+- Beginner deployment, release, backup, recovery, and troubleshooting guide with explicit Vercel/Supabase configuration checklists.
 
 ## Architecture and Important Decisions
 
@@ -40,8 +41,9 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - `20260720000500_appointment_workflow.sql` adds requested appointment services, assigned technicians, optimistic revisions, conflict checks, approved appointment transitions, and atomic work-order conversion.
 - `20260720000600_inventory_workflow.sql` adds optional SKUs/categories, immutable inventory RPCs, initial-stock ledger entries, stock locks, usage reversals, and invoice-ready work-order part snapshots.
 - `20260720000700_invoicing_files.sql` adds atomic invoice generation, offline payments, invoice voiding, and private attachment registration constraints.
+- `20260720000800_production_hardening.sql` revokes public RPC execution and direct protected-table mutations, retains authorized RPCs, prevents loss of the last active admin and overlapping active technician appointments, and adds financial consistency/index protections.
 - All operational tables use RLS. Admin/front desk have operational access; technicians can read only assigned-work context. Inventory movements and activity logs are append-only.
-- `src/types/database.ts` is maintained against v1 and must be regenerated with `npm run supabase:types` after a local reset.
+- `src/types/database.ts` is maintained locally and must be regenerated with `npm run supabase:types` after a successful local reset.
 
 ## Recent Changes
 
@@ -51,14 +53,15 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Tests and Quality Checks
 
-- Passed on 2026-07-20 after operations dashboard/report delivery: `npm run lint`, `npm run typecheck`, `npm test` (19 tests), `npm run build`, and `git diff --check`.
-- Local Supabase migrations could not be applied in this environment because Docker Desktop is not running. Run `npm run supabase:start` then `npm run supabase:reset` before connecting a remote project.
+- Passed after production hardening: `npm run lint`, `npm run typecheck`, `npm test` (20 tests), and `git diff --check`.
+- Required before production release: `npm ci`, a clean `npm run build`, local Supabase reset/type generation, database/RLS/Storage tests, and Playwright critical-path checks. The Docker-backed database and Chromium checks have not been verified in this environment.
 
 ## Known Issues and Technical Debt
 
 - Attachment upload/preview/delete UI, scoped Supabase Realtime subscriptions, optional Resend email, and database/RLS/storage integration tests remain incomplete.
 - The maintained type baseline should be replaced by CLI-generated types after the first successful local database reset.
 - Final light-mode brand colors have not been supplied.
+- Vercel project, Supabase production project, SMTP sender, redirect URLs, backup retention, and restore runbook ownership require external owner configuration; no deployment credentials are committed or available here.
 
 ## Environment or Setup Notes
 
@@ -70,4 +73,4 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Next Recommended Task
 
-Validate the hardening migration against local Supabase, then complete private attachment UI and scoped Realtime invalidation.
+Final deployment audit: configure a production Supabase/Vercel environment, apply migrations through the approved CLI release procedure, validate all role and storage paths with synthetic data, and record backup/restore ownership before launching.
