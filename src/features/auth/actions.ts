@@ -44,11 +44,18 @@ export async function signInWithPassword(_: AuthActionState, formData: FormData)
 export async function sendMagicLink(_: AuthActionState, formData: FormData): Promise<AuthActionState> {
   const parsed = emailSchema.safeParse({ email: formValue(formData, "email") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const origin = (await headers()).get("origin") ?? "http://localhost:3000";
+  const requestOrigin = (await headers()).get("origin") ?? "http://localhost:3000";
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? requestOrigin;
+  let callbackOrigin: string;
+  try {
+    callbackOrigin = new URL(origin).origin;
+  } catch {
+    return { error: "Sign-in links are not configured correctly." };
+  }
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
-    options: { emailRedirectTo: `${origin}/auth/callback`, shouldCreateUser: false },
+    options: { emailRedirectTo: `${callbackOrigin}/auth/callback`, shouldCreateUser: false },
   });
   if (error) return { error: "We could not send a sign-in link. Confirm that your staff account is active." };
   return { message: "If this is an active staff account, a sign-in link is on its way." };

@@ -168,12 +168,10 @@ export async function createService(_: CrmActionState, formData: FormData): Prom
     description: value(formData, "description"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const { error } = await (await createClient()).from("service_catalog").insert({
-    name: parsed.data.name,
-    category: parsed.data.category,
-    standard_price_minor: parsed.data.standardPriceMinor,
-    default_duration_minutes: parsed.data.defaultDurationMinutes,
-    description: parsed.data.description,
+  const { error } = await (await createClient()).rpc("save_service", {
+    target_service_id: null, service_name: parsed.data.name, service_category: parsed.data.category,
+    service_description: parsed.data.description, price_minor: parsed.data.standardPriceMinor,
+    duration_minutes: parsed.data.defaultDurationMinutes,
   });
   if (error) return { error: "Service could not be saved. A service with this name may already exist." };
   revalidatePath("/services");
@@ -189,34 +187,19 @@ export async function updateService(_: CrmActionState, formData: FormData): Prom
     description: value(formData, "description"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const { error } = await (
-    await createClient()
-  )
-    .from("service_catalog")
-    .update({
-      name: parsed.data.name,
-      category: parsed.data.category,
-      standard_price_minor: parsed.data.standardPriceMinor,
-      default_duration_minutes: parsed.data.defaultDurationMinutes,
-      description: parsed.data.description,
-    })
-    .eq("id", id(formData, "serviceId"));
+  const { error } = await (await createClient()).rpc("save_service", {
+    target_service_id: id(formData, "serviceId"), service_name: parsed.data.name,
+    service_category: parsed.data.category, service_description: parsed.data.description,
+    price_minor: parsed.data.standardPriceMinor, duration_minutes: parsed.data.defaultDurationMinutes,
+  });
   if (error) return { error: "Service could not be updated. Existing work order snapshots are unchanged." };
   revalidatePath("/services");
   return { message: "Service updated. Existing work order snapshots are unchanged." };
 }
 export async function setServiceArchived(formData: FormData) {
-  const actor = await requireRole(["admin"]);
+  await requireRole(["admin"]);
   const serviceId = id(formData, "serviceId");
   const archived = value(formData, "archived") === "true";
-  await (
-    await createClient()
-  )
-    .from("service_catalog")
-    .update({
-      archived_at: archived ? new Date().toISOString() : null,
-      archived_by: archived ? actor.id : null,
-    })
-    .eq("id", serviceId);
-  revalidatePath("/services");
+  const { error } = await (await createClient()).rpc("set_service_archived", { target_service_id: serviceId, archived });
+  if (!error) revalidatePath("/services");
 }

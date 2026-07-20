@@ -5,10 +5,11 @@ export function formatMoney(
   currency: string = appConfig.defaultCurrency,
   locale = "en-US",
 ) {
+  const fractionDigits = currency === appConfig.defaultCurrency ? appConfig.currencyFractionDigits : 2;
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(minorUnits);
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(minorUnits / 10 ** fractionDigits);
 }

@@ -43,7 +43,7 @@ npm run supabase:reset
 npm run supabase:types
 ```
 
-`supabase:reset` applies every migration from an empty local database and loads only synthetic seed catalog/inventory data. Never alter an applied migration; add a timestamped migration instead.
+`supabase:reset` applies every migration from an empty local database and loads only synthetic seed catalog/inventory data. Never alter an applied migration; add a timestamped migration instead. Validate the production-hardening migration this way before deployment because it changes grants, RPC permissions, constraints, and invoice checks.
 
 ## 5. Folder Structure
 
@@ -117,21 +117,21 @@ Required browser-safe variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
-`SUPABASE_SERVICE_ROLE_KEY` is server-only. It must never be sent to browser code, committed to git, or used for ordinary user requests. It is currently limited to administrator-authorized Auth Admin API calls for staff creation and Auth bans. `src/lib/supabase/browser.ts` and `src/lib/supabase/server.ts` provide typed SSR-compatible client factories; `src/lib/supabase/admin.ts` is server-only.
+`SUPABASE_SERVICE_ROLE_KEY` is server-only. It must never be sent to browser code, committed to git, or used for ordinary user requests. It is currently limited to administrator-authorized Auth Admin API calls for staff creation and Auth bans. `src/lib/supabase/browser.ts` and `src/lib/supabase/server.ts` provide typed SSR-compatible client factories; `src/lib/supabase/admin.ts` is server-only. Set `NEXT_PUBLIC_APP_URL` to the canonical HTTPS application origin so magic links cannot use an untrusted request origin.
 
 `supabase/config.toml` disables public email sign-up, requires a 12-character complex password, configures local Auth redirect URLs, and enables local email testing. Configure the equivalent Auth settings and production redirect URL in the hosted Supabase project.
 
-Schema migrations create all v1 operational tables, normalized search indexes, archive fields, a singleton `business_settings` record, profile creation trigger, RLS policies, and private Storage buckets. Every application mutation must continue to verify the server-side role; RLS is a second enforcement layer. Technicians can read only records associated with assigned work orders and cannot update profiles or promote themselves.
+Schema migrations create all v1 operational tables, normalized search indexes, archive fields, a singleton `business_settings` record, profile creation trigger, RLS policies, and private Storage buckets. The production-hardening migration revokes public function execution and direct protected-table mutations, retaining only authorized RPCs for inventory, scheduling, work-order, invoice, catalog, and attachment workflows. At least one active administrator must remain. Technicians can read only records associated with assigned work orders and cannot update profiles or promote themselves.
 
 To bootstrap the first administrator, use a secure server-only Supabase Auth Admin API session or Supabase Dashboard user creation with confirmed email, then set trusted Auth app metadata to `{ "role": "admin" }` before the profile trigger runs. Do not use user metadata for roles, do not create the bootstrap user through a browser, and do not commit or document its credentials. Later administrators use the `/staff` screen.
 
 ## 9. Deployment
 
-Deploy to Vercel after configuring the browser-safe Supabase variables and the server-only service-role key in the Vercel project. CI runs installation, linting, type checking, unit tests, and a production build.
+Deploy to Vercel after configuring the browser-safe Supabase variables, `NEXT_PUBLIC_APP_URL`, and the server-only service-role key in the Vercel project. Security headers deny framing, MIME sniffing, camera/microphone/geolocation permissions, and limit referrer disclosure. CI runs installation, linting, type checking, unit tests, and a production build; run local migration, RLS, Storage, and browser-workflow checks before release until CI is extended to execute them.
 
 ## 10. Maintenance and Backups
 
-Never change an applied migration. Add a new migration for every database change, verify it through `npm run supabase:reset`, regenerate types, and run the application checks. Database backup and restore runbooks remain a production-readiness task.
+Never change an applied migration. Add a new migration for every database change, verify it through `npm run supabase:reset`, regenerate types, and run the application checks. Before release, verify direct PostgREST writes are denied, only granted RPCs execute, Storage denies archived/cross-work-order files, and concurrent appointment/inventory/invoice paths preserve their constraints. Database backup and restore runbooks remain a production-readiness task.
 
 ## 11. Development Phases and Major Changes
 
