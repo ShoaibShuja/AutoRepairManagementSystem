@@ -42,7 +42,7 @@ Current status: Release-candidate code and documentation are prepared. Productio
 - `20260720000400_work_order_workflow.sql` adds estimated completion/mileage, service-description snapshots, atomic creation/edit RPCs, lifecycle transitions, technician notes, and activity events.
 - `20260720000450_appointment_statuses.sql` adds appointment `in_progress` and `completed` enum states in a separate committed migration before they are referenced.
 - `20260720000500_appointment_workflow.sql` adds requested appointment services, assigned technicians, optimistic revisions, conflict checks, approved appointment transitions, and atomic work-order conversion.
-- `20260720000600_inventory_workflow.sql` adds optional SKUs/categories, immutable inventory RPCs, initial-stock ledger entries, stock locks, usage reversals, and invoice-ready work-order part snapshots.
+- `20260720000600_inventory_workflow.sql` adds optional SKUs/categories, immutable inventory RPCs, initial-stock ledger entries, stock locks, usage reversals, and invoice-ready work-order part snapshots; it reuses the core inventory indexes.
 - `20260720000700_invoicing_files.sql` adds atomic invoice generation, offline payments, invoice voiding, and private attachment registration constraints.
 - `20260720000800_production_hardening.sql` revokes public RPC execution and direct protected-table mutations, retains authorized RPCs, prevents loss of the last active admin and overlapping active technician appointments, and adds financial consistency/index protections.
 - All operational tables use RLS. Admin/front desk have operational access; technicians can read only assigned-work context. Inventory movements and activity logs are append-only.

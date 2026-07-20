@@ -4,8 +4,6 @@ alter table public.parts alter column sku_normalized drop not null;
 alter table public.parts add column category text;
 alter table public.work_order_parts add column reversed_at timestamptz, add column reversed_by uuid references auth.users(id) on delete set null;
 alter table public.inventory_movements add column reverses_movement_id uuid unique references public.inventory_movements(id) on delete restrict;
-create index inventory_movements_part_created_idx on public.inventory_movements(part_id, created_at desc);
-create index parts_low_stock_idx on public.parts(quantity_on_hand, reorder_threshold) where archived_at is null;
 
 create function public.record_inventory_movement(target_part_id uuid, target_work_order_part_id uuid, movement public.inventory_movement_type, delta numeric, movement_reason text default null, reversal_of uuid default null)
 returns uuid language plpgsql security definer set search_path=public as $$
