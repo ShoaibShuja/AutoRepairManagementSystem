@@ -1,32 +1,37 @@
 # AutoCare Pro
 
-Staff-only, single-location car wash and auto repair operations management.
+Staff-only, single-location car wash and auto repair operations management. It covers customers, vehicles, appointments, work orders, inventory, offline invoices, and role-based staff access.
 
-## Quick start
+## Stack
 
-```bash
+Next.js 16 App Router, TypeScript, Tailwind CSS, Supabase Auth/Postgres/Storage, TanStack Query, Zod, and Playwright/Vitest.
+
+## Quick local setup
+
+```powershell
 npm install
 Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Fill the browser-safe Supabase variables in `.env.local` before opening `http://localhost:3000`. Never commit `.env.local` or service-role credentials.
 
-Before using Supabase clients, replace the placeholder browser-safe values in `.env.local`. Never commit real credentials.
+## Required commands
 
-## Quality checks
-
-```bash
+```powershell
 npm run lint
 npm run typecheck
 npm test
 npm run build
+npm run supabase:start
+npm run supabase:reset
+npm run supabase:types
 ```
 
-For browser tests, install Chromium once with `npx playwright install chromium`, then run `npm run test:e2e`.
+Install Playwright Chromium once with `npx playwright install chromium`, then run `npm run test:e2e`.
 
 ## Documentation
 
-- [Project guide](./docs/PROJECT_GUIDE.md): setup, folders, environment variables, and maintenance notes.
-- [Implementation blueprint](./docs/IMPLEMENTATION_BLUEPRINT.md): approved architecture and phased roadmap.
-- [Project state](./PROJECT_STATE.md): current implementation status and next task.
+- [Project state](./PROJECT_STATE.md)
+- [Beginner project and deployment guide](./docs/PROJECT_GUIDE.md)
+- [Implementation blueprint](./docs/IMPLEMENTATION_BLUEPRINT.md)
