@@ -1,5 +1,7 @@
 # AutoCare Pro Implementation Blueprint
 
+> Historical planning reference. Current implemented behavior and release procedures are authoritative in `PROJECT_STATE.md` and `docs/PROJECT_GUIDE.md`.
+
 ## Summary and Scope Lock
 
 Build a single-location internal operations system for three roles only: `admin`, `front_desk`, and `technician`. The required stack is Next.js 16 App Router, strict TypeScript, Tailwind/shadcn, Supabase (Postgres/Auth/Realtime/Storage), TanStack Query, React Hook Form, Zod, and Vercel.
@@ -22,20 +24,20 @@ Build a single-location internal operations system for three roles only: `admin`
 
 Use a protected `(app)` route group with a persistent application shell and a `(auth)` group.
 
-| Area | Routes and screens |
-|---|---|
-| Authentication | `/login`, `/auth/callback`, `/invite/accept`, `/access-denied` |
-| Dashboard | `/dashboard`: today’s appointments, job queue, low stock, unpaid invoices, compact daily metrics |
-| Appointments | `/appointments`, `/appointments/day`, `/appointments/week`, `/appointments/new`, `/appointments/[id]` |
-| Customers | `/customers`, `/customers/new`, `/customers/[id]` |
-| Vehicles | `/vehicles/[id]`, linked vehicle creation/editing from customer pages |
-| Work orders | `/work-orders`, `/work-orders/new`, `/work-orders/[id]`, `/my-work` |
-| Service catalog | `/services`, `/services/new`, `/services/[id]` |
-| Inventory | `/inventory`, `/inventory/new`, `/inventory/[id]`, `/inventory/[id]/movements`, `/inventory/restock` |
-| Invoices | `/invoices`, `/invoices/[id]`, `/invoices/[id]/print` |
-| Reports | `/reports`, with date-range revenue, operational, technician workload, and inventory movement sections |
-| Staff | `/staff`, `/staff/invite`, `/staff/[id]` |
-| Configuration | `/settings/business`, `/settings/invoicing`, `/settings/storage` |
+| Area            | Routes and screens                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| Authentication  | `/login`, `/auth/callback`, `/invite/accept`, `/access-denied`                                         |
+| Dashboard       | `/dashboard`: today’s appointments, job queue, low stock, unpaid invoices, compact daily metrics       |
+| Appointments    | `/appointments`, `/appointments/day`, `/appointments/week`, `/appointments/new`, `/appointments/[id]`  |
+| Customers       | `/customers`, `/customers/new`, `/customers/[id]`                                                      |
+| Vehicles        | `/vehicles/[id]`, linked vehicle creation/editing from customer pages                                  |
+| Work orders     | `/work-orders`, `/work-orders/new`, `/work-orders/[id]`, `/my-work`                                    |
+| Service catalog | `/services`, `/services/new`, `/services/[id]`                                                         |
+| Inventory       | `/inventory`, `/inventory/new`, `/inventory/[id]`, `/inventory/[id]/movements`, `/inventory/restock`   |
+| Invoices        | `/invoices`, `/invoices/[id]`, `/invoices/[id]/print`                                                  |
+| Reports         | `/reports`, with date-range revenue, operational, technician workload, and inventory movement sections |
+| Staff           | `/staff`, `/staff/invite`, `/staff/[id]`                                                               |
+| Configuration   | `/settings/business`, `/settings/invoicing`, `/settings/storage`                                       |
 
 Route-level authorization rejects access before rendering. Each list page supports explicit pagination, filters, empty state, loading state, error state, and a narrow-screen card alternative.
 
@@ -93,23 +95,23 @@ Route-level authorization rejects access before rendering. Each list page suppor
 
 ## Delivery Roadmap
 
-| Prompt | Deliverable |
-|---|---|
-| 2 | Foundation: project cleanup, shadcn/Tailwind token system, feature structure, environment validation, Supabase SSR clients, baseline testing/CI, project documentation. |
-| 3 | Supabase schema v1: enums, tables, indexes, generated types, profile trigger, RLS baseline, singleton settings, local setup and migration tests. |
-| 4 | Authentication and staff lifecycle: login/callback, protected shell, role guards, invitation/admin staff management, access-denied flows. |
-| 5 | Customer and vehicle CRM: normalized search, customer/vehicle CRUD, notes, service-history foundations, responsive list/detail UI. |
-| 6 | Service catalog and inventory: catalog CRUD/archive, inventory item management, restocking, movement ledger, low-stock signals, atomic stock RPCs. |
-| 7 | Appointments: appointment schema/actions, day/week schedule, filters, appointment status, drag-to-reschedule and conflict handling. |
-| 8 | Work orders: intake from appointment/manual creation, service lines, technician assignment, permitted role actions, status machine, My Work queue. |
-| 9 | Technician completion: technical notes, photo storage/policies, part usage, live stock refresh, work-order timeline and vehicle history. |
-| 10 | Invoices and payments: immutable invoice issuance RPC, offline cash/card payments, receipt PDF/print, invoice lists and unpaid state. |
-| 11 | Daily dashboard: role-specific queue, operational counters, low-stock and unpaid invoice alerts, realtime synchronization. |
-| 12 | Reports: date-filtered revenue, appointment, work-order, technician workload, and inventory movement reports with authorization. |
-| 13 | Usability pass: mobile table cards, empty/loading/error/permission states, keyboard/focus review, destructive confirmations, responsive QA. |
-| 14 | Security and reliability hardening: RLS policy matrix tests, RPC permission tests, upload abuse protection, rate/size limits, audit trails, error observability. |
-| 15 | Production readiness: CI gates, migration/deployment runbook, backup/restore notes, environment documentation, Vercel/Supabase deployment validation. |
-| 16 | Optional Resend integration: configurable appointment confirmation/reminder delivery, failure-safe logs, templates, and feature flag. |
+| Prompt | Deliverable                                                                                                                                                             |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2      | Foundation: project cleanup, shadcn/Tailwind token system, feature structure, environment validation, Supabase SSR clients, baseline testing/CI, project documentation. |
+| 3      | Supabase schema v1: enums, tables, indexes, generated types, profile trigger, RLS baseline, singleton settings, local setup and migration tests.                        |
+| 4      | Authentication and staff lifecycle: login/callback, protected shell, role guards, invitation/admin staff management, access-denied flows.                               |
+| 5      | Customer and vehicle CRM: normalized search, customer/vehicle CRUD, notes, service-history foundations, responsive list/detail UI.                                      |
+| 6      | Service catalog and inventory: catalog CRUD/archive, inventory item management, restocking, movement ledger, low-stock signals, atomic stock RPCs.                      |
+| 7      | Appointments: appointment schema/actions, day/week schedule, filters, appointment status, drag-to-reschedule and conflict handling.                                     |
+| 8      | Work orders: intake from appointment/manual creation, service lines, technician assignment, permitted role actions, status machine, My Work queue.                      |
+| 9      | Technician completion: technical notes, photo storage/policies, part usage, live stock refresh, work-order timeline and vehicle history.                                |
+| 10     | Invoices and payments: immutable invoice issuance RPC, offline cash/card payments, receipt PDF/print, invoice lists and unpaid state.                                   |
+| 11     | Daily dashboard: role-specific queue, operational counters, low-stock and unpaid invoice alerts, realtime synchronization.                                              |
+| 12     | Reports: date-filtered revenue, appointment, work-order, technician workload, and inventory movement reports with authorization.                                        |
+| 13     | Usability pass: mobile table cards, empty/loading/error/permission states, keyboard/focus review, destructive confirmations, responsive QA.                             |
+| 14     | Security and reliability hardening: RLS policy matrix tests, RPC permission tests, upload abuse protection, rate/size limits, audit trails, error observability.        |
+| 15     | Production readiness: CI gates, migration/deployment runbook, backup/restore notes, environment documentation, Vercel/Supabase deployment validation.                   |
+| 16     | Optional Resend integration: configurable appointment confirmation/reminder delivery, failure-safe logs, templates, and feature flag.                                   |
 
 ### MVP Acceptance After Prompt 10
 

@@ -1,5 +1,14 @@
 import type { LucideIcon } from "lucide-react";
-import { BarChart3, CalendarDays, CarFront, ClipboardList, LayoutDashboard, ListChecks, Package, UsersRound } from "lucide-react";
+import {
+  BarChart3,
+  CalendarDays,
+  CarFront,
+  ClipboardList,
+  LayoutDashboard,
+  ListChecks,
+  Package,
+  UsersRound,
+} from "lucide-react";
 import type { StaffRole } from "@/lib/auth/permissions";
 
 export type NavigationItem = { href: string; icon: LucideIcon; label: string; roles: readonly StaffRole[] };

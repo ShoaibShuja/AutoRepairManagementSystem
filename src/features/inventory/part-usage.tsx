@@ -1,4 +1,88 @@
 "use client";
-import {useActionState} from "react";import {ServerError} from "@/components/operational";import {reversePartUse,usePart,type InventoryActionState} from "./actions";
-type Part={id:string;name:string;sku:string|null;stock:number;unit:string};type Used={id:string;name:string;quantity:number;unit:string;reversed:boolean};
-export function PartUsage({workOrderId,parts,used,canUse}:{workOrderId:string;parts:Part[];used:Used[];canUse:boolean}){const[state,action,pending]=useActionState(usePart,{} as InventoryActionState);return <section className="rounded-lg border bg-card p-5"><h2 className="font-semibold">Parts used</h2><p className="mt-1 text-sm text-muted-foreground">Stock is deducted only after confirmed use. Corrections create a reversal movement.</p>{used.length?<ul className="mt-4 space-y-2">{used.map((line)=><li className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3 text-sm" key={line.id}><span>{line.name} · {line.quantity} {line.unit}{line.reversed?" (reversed)":""}</span>{canUse&&!line.reversed?<form action={reversePartUse} className="flex gap-2"><input name="workOrderId" type="hidden" value={workOrderId}/><input name="partLineId" type="hidden" value={line.id}/><input className="h-8 rounded-md border px-2" name="reason" placeholder="Reversal reason" required/><button className="text-destructive">Reverse</button></form>:null}</li>)}</ul>:<p className="mt-3 text-sm text-muted-foreground">No confirmed parts used.</p>}{canUse?<form action={action} className="mt-5 grid gap-3 sm:grid-cols-[1fr_8rem_auto]"><input name="workOrderId" type="hidden" value={workOrderId}/><select className="h-10 rounded-md border bg-background px-3" name="partId" required><option value="">Select active part</option>{parts.map((part)=><option key={part.id} value={part.id}>{part.name}{part.sku?` (${part.sku})`:""} · {part.stock} {part.unit}</option>)}</select><input className="h-10 rounded-md border bg-background px-3" min="0.001" name="quantity" placeholder="Qty" required step="0.001" type="number"/><button className="rounded-md bg-brand-primary px-3 text-sm font-medium text-brand-primary-foreground" disabled={pending}>Confirm use</button></form>:null}<ServerError message={state.error}/>{state.message?<p className="mt-2 text-sm text-success">{state.message}</p>:null}</section>}
+import { useActionState } from "react";
+import { ServerError } from "@/components/operational";
+import { reversePartUse, usePart, type InventoryActionState } from "./actions";
+type Part = { id: string; name: string; sku: string | null; stock: number; unit: string };
+type Used = { id: string; name: string; quantity: number; unit: string; reversed: boolean };
+export function PartUsage({
+  workOrderId,
+  parts,
+  used,
+  canUse,
+}: {
+  workOrderId: string;
+  parts: Part[];
+  used: Used[];
+  canUse: boolean;
+}) {
+  const [state, action, pending] = useActionState(usePart, {} as InventoryActionState);
+  return (
+    <section className="rounded-lg border bg-card p-5">
+      <h2 className="font-semibold">Parts used</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Stock is deducted only after confirmed use. Corrections create a reversal movement.
+      </p>
+      {used.length ? (
+        <ul className="mt-4 space-y-2">
+          {used.map((line) => (
+            <li
+              className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3 text-sm"
+              key={line.id}
+            >
+              <span>
+                {line.name} · {line.quantity} {line.unit}
+                {line.reversed ? " (reversed)" : ""}
+              </span>
+              {canUse && !line.reversed ? (
+                <form action={reversePartUse} className="flex gap-2">
+                  <input name="workOrderId" type="hidden" value={workOrderId} />
+                  <input name="partLineId" type="hidden" value={line.id} />
+                  <input
+                    className="h-8 rounded-md border px-2"
+                    name="reason"
+                    placeholder="Reversal reason"
+                    required
+                  />
+                  <button className="text-destructive">Reverse</button>
+                </form>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-3 text-sm text-muted-foreground">No confirmed parts used.</p>
+      )}
+      {canUse ? (
+        <form action={action} className="mt-5 grid gap-3 sm:grid-cols-[1fr_8rem_auto]">
+          <input name="workOrderId" type="hidden" value={workOrderId} />
+          <select className="h-10 rounded-md border bg-background px-3" name="partId" required>
+            <option value="">Select active part</option>
+            {parts.map((part) => (
+              <option key={part.id} value={part.id}>
+                {part.name}
+                {part.sku ? ` (${part.sku})` : ""} · {part.stock} {part.unit}
+              </option>
+            ))}
+          </select>
+          <input
+            className="h-10 rounded-md border bg-background px-3"
+            min="0.001"
+            name="quantity"
+            placeholder="Qty"
+            required
+            step="0.001"
+            type="number"
+          />
+          <button
+            className="rounded-md bg-brand-primary px-3 text-sm font-medium text-brand-primary-foreground"
+            disabled={pending}
+          >
+            Confirm use
+          </button>
+        </form>
+      ) : null}
+      <ServerError message={state.error} />
+      {state.message ? <p className="mt-2 text-sm text-success">{state.message}</p> : null}
+    </section>
+  );
+}

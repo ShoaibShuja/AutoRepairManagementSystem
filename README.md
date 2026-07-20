@@ -2,6 +2,10 @@
 
 Staff-only, single-location car wash and auto repair operations management. It covers customers, vehicles, appointments, work orders, inventory, offline invoices, and role-based staff access.
 
+## Release candidate
+
+The current release candidate is `release/v1.0.0`. Follow the project guide for the approved staging, migration, rollback, and production verification sequence. Do not deploy from historic feature or documentation branches.
+
 ## Stack
 
 Next.js 16 App Router, TypeScript, Tailwind CSS, Supabase Auth/Postgres/Storage, TanStack Query, Zod, and Playwright/Vitest.

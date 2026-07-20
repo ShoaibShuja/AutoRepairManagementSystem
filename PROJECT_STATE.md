@@ -1,9 +1,9 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Production hardening for data, authentication, RBAC, authenticated UI, CRM, catalog, work orders, appointments, inventory, and offline invoicing
-Current branch: main
-Current status: Deployment and beginner-owner handoff documentation are prepared. Production deployment itself remains unverified until the owner configures Vercel, Supabase, Auth email, backups, and runs the release checks.
+Current phase: Version 1 release candidate
+Current branch: release/v1.0.0
+Current status: Release-candidate code and documentation are prepared. Production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
 
 ## Working Features
 
@@ -21,6 +21,8 @@ Current status: Deployment and beginner-owner handoff documentation are prepared
 - Role-scoped daily dashboard metrics and date-range essential operations reports.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
 - Production hardening revokes public RPC execution and direct protected-table writes, preserves an active administrator, prevents concurrent active technician appointments, and checks invoice line-item totals.
+- Release-candidate attachment support uploads only private, validated work-order files; registration verifies the work order vehicle, previews use signed URLs, and archive retains operational evidence.
+- Route-scoped Realtime subscriptions refresh authoritative appointment, work-order, inventory, and dashboard data without appending duplicate records.
 - Money display converts stored integer minor units using the configured AFN precision; work-order search applies before pagination.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 - Beginner deployment, release, backup, recovery, and troubleshooting guide with explicit Vercel/Supabase configuration checklists.
@@ -54,11 +56,13 @@ Current status: Deployment and beginner-owner handoff documentation are prepared
 ## Tests and Quality Checks
 
 - Passed after production hardening: `npm run lint`, `npm run typecheck`, `npm test` (20 tests), and `git diff --check`.
-- Required before production release: `npm ci`, a clean `npm run build`, local Supabase reset/type generation, database/RLS/Storage tests, and Playwright critical-path checks. The Docker-backed database and Chromium checks have not been verified in this environment.
+- Required before production release: `npm ci`, `npm run format:check`, a clean `npm run build`, local Supabase reset/type generation, database/RLS/Storage tests, and Playwright critical-path checks.
+- Production release is prohibited while a critical migration, database/RLS/Storage, browser, or external setup check is unverified.
 
 ## Known Issues and Technical Debt
 
-- Attachment upload/preview/delete UI, scoped Supabase Realtime subscriptions, optional Resend email, and database/RLS/storage integration tests remain incomplete.
+- Optional Resend appointment email is intentionally not implemented.
+- Hosted Supabase/Vercel deployment, backup retention, and restore verification remain owner-controlled external requirements.
 - The maintained type baseline should be replaced by CLI-generated types after the first successful local database reset.
 - Final light-mode brand colors have not been supplied.
 - Vercel project, Supabase production project, SMTP sender, redirect URLs, backup retention, and restore runbook ownership require external owner configuration; no deployment credentials are committed or available here.
@@ -71,6 +75,8 @@ Current status: Deployment and beginner-owner handoff documentation are prepared
 - `NEXT_PUBLIC_APP_URL` is the canonical application origin used for magic-link callbacks.
 - Use npm because `package-lock.json` is committed.
 
-## Next Recommended Task
+## Recommended Post-Deployment Checks
 
-Final deployment audit: configure a production Supabase/Vercel environment, apply migrations through the approved CLI release procedure, validate all role and storage paths with synthetic data, and record backup/restore ownership before launching.
+1. Validate staff sign-in, role boundaries, appointment-to-invoice workflow, private file access, Realtime refresh, and printed invoice with synthetic records.
+2. Review Vercel and Supabase Auth, Database, and Storage logs after the first business day.
+3. Record backup retention, restore owner, and a successful restore into a separate project before production data is onboarded.
