@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-20
 Current phase: Production hardening for data, authentication, RBAC, authenticated UI, CRM, catalog, work orders, appointments, inventory, and offline invoicing
-Current branch: docs/deployment-handoff
+Current branch: main
 Current status: Deployment and beginner-owner handoff documentation are prepared. Production deployment itself remains unverified until the owner configures Vercel, Supabase, Auth email, backups, and runs the release checks.
 
 ## Working Features
