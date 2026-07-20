@@ -9,8 +9,25 @@ type WorkOrderListEntry = { id: string; public_number: number; status: string; c
 export default async function WorkOrdersPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; technician?: string; page?: string; create?: string }> }) {
   await requireRole(["admin", "front_desk"]); const filters = await searchParams; const supabase = await createClient();
   const page = Math.max(1, Number(filters.page) || 1); const from = (page - 1) * pageSize;
+  const query = (filters.q?.trim() ?? "").replace(/[%,()]/g, "");
+  const normalizedPhoneQuery = query.replace(/[^0-9+]/g, "");
+  const normalizedPlateQuery = query.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  const [customerMatches, vehicleMatches] = query
+    ? await Promise.all([
+        supabase.from("customers").select("id").or([`name_normalized.ilike.%${query.toLowerCase()}%`, ...(normalizedPhoneQuery ? [`phone_normalized.ilike.%${normalizedPhoneQuery}%`] : [])].join(",")).limit(100),
+        normalizedPlateQuery ? supabase.from("vehicles").select("id").ilike("plate_normalized", `%${normalizedPlateQuery}%`).limit(100) : Promise.resolve({ data: [] as Array<{ id: string }> }),
+      ])
+    : [{ data: [] as Array<{ id: string }> }, { data: [] as Array<{ id: string }> }];
   let request = supabase.from("work_orders").select("id, public_number, customer_id, vehicle_id, assigned_technician_id, status, created_at, customers(full_name, phone), vehicles(plate_number, make, model), work_order_services(unit_price_minor, quantity)", { count: "exact" }).order("created_at", { ascending: false }).range(from, from + pageSize - 1);
   if (filters.status) request = request.eq("status", filters.status); if (filters.technician) request = request.eq("assigned_technician_id", filters.technician);
+  if (query) {
+    const matchingCustomerIds = (customerMatches.data ?? []).map((item) => item.id);
+    const matchingVehicleIds = (vehicleMatches.data ?? []).map((item) => item.id);
+    const filtersForQuery = [`public_number.eq.${Number(query) || -1}`];
+    if (matchingCustomerIds.length) filtersForQuery.push(`customer_id.in.(${matchingCustomerIds.join(",")})`);
+    if (matchingVehicleIds.length) filtersForQuery.push(`vehicle_id.in.(${matchingVehicleIds.join(",")})`);
+    request = request.or(filtersForQuery.join(","));
+  }
   const { data, count, error } = await request; const orders = (data ?? []) as unknown as WorkOrderListEntry[];
   const [{ data: customers }, { data: vehicles }, { data: services }, { data: technicians }] = await Promise.all([
     supabase.from("customers").select("id, full_name, phone").is("archived_at", null).order("full_name"),
@@ -18,7 +35,7 @@ export default async function WorkOrdersPage({ searchParams }: { searchParams: P
     supabase.from("service_catalog").select("id, name, description, standard_price_minor").is("archived_at", null).order("name"),
     supabase.from("profiles").select("id, display_name").eq("role", "technician").eq("account_status", "active").order("display_name"),
   ]);
-  const query = filters.q?.trim().toLowerCase() ?? ""; const visibleOrders = query ? orders.filter((order) => [String(order.public_number), order.customers?.full_name, order.customers?.phone, order.vehicles?.plate_number].some((item) => item?.toLowerCase().includes(query))) : orders;
+  const visibleOrders = orders;
   const totalPages = Math.max(1, Math.ceil((count ?? 0) / pageSize));
   return <section className="space-y-8"><PageHeader eyebrow="Operations" title="Work orders" description="Create, assign, and track workshop work. Service prices are captured when an order is created." actions={<Link className="rounded-md bg-brand-primary px-4 py-2 text-sm font-medium text-brand-primary-foreground" href="/work-orders?create=1">New work order</Link>} />
     <form className="grid gap-2 rounded-lg border bg-card p-3 md:grid-cols-[1fr_auto_auto_auto]"><input className="h-10 rounded-md border bg-background px-3" defaultValue={filters.q ?? ""} name="q" placeholder="Number, customer, phone, or plate" /><select className="h-10 rounded-md border bg-background px-3" defaultValue={filters.status ?? ""} name="status"><option value="">All statuses</option>{["draft","assigned","in_progress","ready_for_review","completed","invoiced","cancelled"].map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select><select className="h-10 rounded-md border bg-background px-3" defaultValue={filters.technician ?? ""} name="technician"><option value="">All technicians</option>{(technicians ?? []).map((tech) => <option key={tech.id} value={tech.id}>{tech.display_name}</option>)}</select><button className="rounded-md bg-brand-primary px-4 text-sm font-medium text-brand-primary-foreground">Filter</button></form>

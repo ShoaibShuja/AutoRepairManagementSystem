@@ -144,6 +144,12 @@ export type Database = {
       confirm_work_order_part_usage: { Args: { target_work_order_id: string; target_part_id: string; quantity: number }; Returns: string };
       reverse_work_order_part_usage: { Args: { target_work_order_part_id: string; reason: string }; Returns: string };
       create_part: { Args: { part_name: string; part_sku: string; part_category: string | null; part_unit: string; opening_quantity: number; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
+      save_part: { Args: { target_part_id: string; part_name: string; part_sku: string; part_category: string | null; part_unit: string; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
+      set_part_archived: { Args: { target_part_id: string; archived: boolean }; Returns: undefined };
+      save_service: { Args: { target_service_id: string | null; service_name: string; service_category: string | null; service_description: string | null; price_minor: number; duration_minutes: number }; Returns: string };
+      set_service_archived: { Args: { target_service_id: string; archived: boolean }; Returns: undefined };
+      set_customer_archived: { Args: { target_customer_id: string; archived: boolean }; Returns: undefined };
+      set_vehicle_archived: { Args: { target_vehicle_id: string; archived: boolean }; Returns: undefined };
       create_invoice_from_work_order: { Args: { target_work_order_id: string }; Returns: string };
       record_offline_payment: { Args: { target_invoice_id: string; payment_method: Database["public"]["Enums"]["payment_method"]; payment_reference: string | null; payment_notes: string | null }; Returns: string };
       void_invoice: { Args: { target_invoice_id: string; reason: string }; Returns: undefined };

@@ -1,7 +1,7 @@
 # Project State
 
 Last updated: 2026-07-20
-Current phase: Data, authentication, RBAC, authenticated UI, CRM, service catalog, work orders, appointments, inventory, and offline invoicing
+Current phase: Production hardening for data, authentication, RBAC, authenticated UI, CRM, catalog, work orders, appointments, inventory, and offline invoicing
 Current branch: feat/operations-insights
 Current status: Supabase schema v1, staff authentication/RBAC, responsive application shell, CRM/catalog, work-order, appointment, inventory, offline invoicing, and basic daily operations reporting are implemented.
 
@@ -20,6 +20,8 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Offline invoices with database-generated numbering, service/part snapshots, payment and void lifecycle, and browser print-to-PDF layout.
 - Role-scoped daily dashboard metrics and date-range essential operations reports.
 - Browser and SSR Supabase client factories, with deferred runtime environment validation.
+- Production hardening revokes public RPC execution and direct protected-table writes, preserves an active administrator, prevents concurrent active technician appointments, and checks invoice line-item totals.
+- Money display converts stored integer minor units using the configured AFN precision; work-order search applies before pagination.
 - Unit/component test harness, Playwright foundation, formatting configuration, and GitHub Actions quality workflow.
 
 ## Architecture and Important Decisions
@@ -54,7 +56,7 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 
 ## Known Issues and Technical Debt
 
-- Attachment upload/preview/delete UI, global search, scoped Supabase Realtime subscriptions, optional Resend email, and dedicated invoice/storage/reporting tests remain incomplete.
+- Attachment upload/preview/delete UI, scoped Supabase Realtime subscriptions, optional Resend email, and database/RLS/storage integration tests remain incomplete.
 - The maintained type baseline should be replaced by CLI-generated types after the first successful local database reset.
 - Final light-mode brand colors have not been supplied.
 
@@ -63,8 +65,9 @@ Current status: Supabase schema v1, staff authentication/RBAC, responsive applic
 - Copy `.env.example` to `.env.local`; never commit `.env.local`.
 - Browser-safe: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 - Server-only: `SUPABASE_SERVICE_ROLE_KEY`, required for administrator-authorized staff provisioning and deactivation Auth bans.
+- `NEXT_PUBLIC_APP_URL` is the canonical application origin used for magic-link callbacks.
 - Use npm because `package-lock.json` is committed.
 
 ## Next Recommended Task
 
-Complete global search, scoped Supabase Realtime, optional Resend email, and private attachment upload/preview/delete UI.
+Validate the hardening migration against local Supabase, then complete private attachment UI and scoped Realtime invalidation.

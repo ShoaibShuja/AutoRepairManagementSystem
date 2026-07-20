@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { requireRole, requireStaff } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 import { workOrderSchema } from "./validation";
@@ -38,9 +39,9 @@ export async function updateWorkOrder(_: WorkOrderActionState, formData: FormDat
 
 export async function transitionWorkOrder(formData: FormData) {
   const staff = await requireStaff();
-  const workOrderId = value(formData, "workOrderId");
-  const nextStatus = value(formData, "nextStatus") as "draft" | "assigned" | "in_progress" | "ready_for_review" | "completed" | "invoiced" | "cancelled";
-  const note = value(formData, "note");
+  const parsed = z.object({ workOrderId: z.string().uuid(), nextStatus: z.enum(["assigned", "in_progress", "ready_for_review", "completed", "invoiced", "cancelled"]), note: z.string().trim().max(2000) }).safeParse({ workOrderId: value(formData, "workOrderId"), nextStatus: value(formData, "nextStatus"), note: value(formData, "note") });
+  if (!parsed.success) return;
+  const { workOrderId, nextStatus, note } = parsed.data;
   const { error } = await (await createClient()).rpc("transition_work_order", { target_work_order_id: workOrderId, next_status: nextStatus, note: note || null });
   if (error) return;
   revalidatePath(`/work-orders/${workOrderId}`); revalidatePath("/work-orders"); revalidatePath("/my-work");
