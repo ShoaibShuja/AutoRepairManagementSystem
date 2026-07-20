@@ -1,4 +1,113 @@
 "use client";
-import {useActionState} from "react";import {Button} from "@/components/ui/button";import {FormSection,ServerError} from "@/components/operational";import {savePart,type InventoryActionState} from "./actions";
-type Part={id?:string;name?:string;sku?:string|null;category?:string|null;unit?:string;quantity?:number;threshold?:number;cost?:number|null;selling?:number};
-export function PartForm({part,admin}:{part?:Part;admin:boolean}){const[state,action,pending]=useActionState(savePart,{} as InventoryActionState);return <form action={action} className="space-y-4">{part?.id?<input name="partId" type="hidden" value={part.id}/>:null}<FormSection title={part?"Edit part":"New part"} description="Opening stock is recorded only when the part is created; later changes must use an immutable movement."><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Name *<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.name??""} name="name" required/></label><label className="text-sm font-medium">SKU<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.sku??""} name="sku"/></label><label className="text-sm font-medium">Category<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.category??""} name="category"/></label><label className="text-sm font-medium">Unit *<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.unit??"each"} name="unit" required/></label><label className="text-sm font-medium">{part?"Current stock (read-only after creation)":"Opening stock"}<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.quantity??0} disabled={Boolean(part)} name="quantity" min="0" type="number"/></label><label className="text-sm font-medium">Minimum stock *<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.threshold??0} name="threshold" min="0" required type="number"/></label>{admin?<label className="text-sm font-medium">Cost (minor units)<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.cost??""} name="cost" min="0" type="number"/></label>:null}<label className="text-sm font-medium">Selling price (minor units) *<input className="mt-1 h-10 w-full rounded-md border bg-background px-3" defaultValue={part?.selling??0} name="selling" min="0" required type="number"/></label></div></FormSection><ServerError message={state.error}/>{state.message?<p className="text-sm text-success">{state.message}</p>:null}<Button disabled={pending}>{pending?"Saving…":"Save part"}</Button></form>}
+import { useActionState } from "react";
+import { Button } from "@/components/ui/button";
+import { FormSection, ServerError } from "@/components/operational";
+import { savePart, type InventoryActionState } from "./actions";
+type Part = {
+  id?: string;
+  name?: string;
+  sku?: string | null;
+  category?: string | null;
+  unit?: string;
+  quantity?: number;
+  threshold?: number;
+  cost?: number | null;
+  selling?: number;
+};
+export function PartForm({ part, admin }: { part?: Part; admin: boolean }) {
+  const [state, action, pending] = useActionState(savePart, {} as InventoryActionState);
+  return (
+    <form action={action} className="space-y-4">
+      {part?.id ? <input name="partId" type="hidden" value={part.id} /> : null}
+      <FormSection
+        title={part ? "Edit part" : "New part"}
+        description="Opening stock is recorded only when the part is created; later changes must use an immutable movement."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="text-sm font-medium">
+            Name *
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.name ?? ""}
+              name="name"
+              required
+            />
+          </label>
+          <label className="text-sm font-medium">
+            SKU
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.sku ?? ""}
+              name="sku"
+            />
+          </label>
+          <label className="text-sm font-medium">
+            Category
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.category ?? ""}
+              name="category"
+            />
+          </label>
+          <label className="text-sm font-medium">
+            Unit *
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.unit ?? "each"}
+              name="unit"
+              required
+            />
+          </label>
+          <label className="text-sm font-medium">
+            {part ? "Current stock (read-only after creation)" : "Opening stock"}
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.quantity ?? 0}
+              disabled={Boolean(part)}
+              name="quantity"
+              min="0"
+              type="number"
+            />
+          </label>
+          <label className="text-sm font-medium">
+            Minimum stock *
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.threshold ?? 0}
+              name="threshold"
+              min="0"
+              required
+              type="number"
+            />
+          </label>
+          {admin ? (
+            <label className="text-sm font-medium">
+              Cost (minor units)
+              <input
+                className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+                defaultValue={part?.cost ?? ""}
+                name="cost"
+                min="0"
+                type="number"
+              />
+            </label>
+          ) : null}
+          <label className="text-sm font-medium">
+            Selling price (minor units) *
+            <input
+              className="mt-1 h-10 w-full rounded-md border bg-background px-3"
+              defaultValue={part?.selling ?? 0}
+              name="selling"
+              min="0"
+              required
+              type="number"
+            />
+          </label>
+        </div>
+      </FormSection>
+      <ServerError message={state.error} />
+      {state.message ? <p className="text-sm text-success">{state.message}</p> : null}
+      <Button disabled={pending}>{pending ? "Saving…" : "Save part"}</Button>
+    </form>
+  );
+}

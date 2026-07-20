@@ -168,9 +168,14 @@ export async function createService(_: CrmActionState, formData: FormData): Prom
     description: value(formData, "description"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const { error } = await (await createClient()).rpc("save_service", {
-    target_service_id: null, service_name: parsed.data.name, service_category: parsed.data.category,
-    service_description: parsed.data.description, price_minor: parsed.data.standardPriceMinor,
+  const { error } = await (
+    await createClient()
+  ).rpc("save_service", {
+    target_service_id: null,
+    service_name: parsed.data.name,
+    service_category: parsed.data.category,
+    service_description: parsed.data.description,
+    price_minor: parsed.data.standardPriceMinor,
     duration_minutes: parsed.data.defaultDurationMinutes,
   });
   if (error) return { error: "Service could not be saved. A service with this name may already exist." };
@@ -187,10 +192,15 @@ export async function updateService(_: CrmActionState, formData: FormData): Prom
     description: value(formData, "description"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const { error } = await (await createClient()).rpc("save_service", {
-    target_service_id: id(formData, "serviceId"), service_name: parsed.data.name,
-    service_category: parsed.data.category, service_description: parsed.data.description,
-    price_minor: parsed.data.standardPriceMinor, duration_minutes: parsed.data.defaultDurationMinutes,
+  const { error } = await (
+    await createClient()
+  ).rpc("save_service", {
+    target_service_id: id(formData, "serviceId"),
+    service_name: parsed.data.name,
+    service_category: parsed.data.category,
+    service_description: parsed.data.description,
+    price_minor: parsed.data.standardPriceMinor,
+    duration_minutes: parsed.data.defaultDurationMinutes,
   });
   if (error) return { error: "Service could not be updated. Existing work order snapshots are unchanged." };
   revalidatePath("/services");
@@ -200,6 +210,8 @@ export async function setServiceArchived(formData: FormData) {
   await requireRole(["admin"]);
   const serviceId = id(formData, "serviceId");
   const archived = value(formData, "archived") === "true";
-  const { error } = await (await createClient()).rpc("set_service_archived", { target_service_id: serviceId, archived });
+  const { error } = await (
+    await createClient()
+  ).rpc("set_service_archived", { target_service_id: serviceId, archived });
   if (!error) revalidatePath("/services");
 }

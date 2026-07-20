@@ -8,7 +8,7 @@ AutoCare Pro is a staff-only system for one car wash and auto repair shop. It re
 
 - **Administrator:** manages staff accounts, service catalog entries, inventory settings and cost data, reports, and all operational records.
 - **Front desk:** manages customers, vehicles, appointments, work orders, invoices, payments, inventory, and reports. It cannot manage staff accounts.
-- **Technician:** opens assigned jobs only, records technical notes, changes permitted job statuses, and records parts used. Photo upload and preview screens are not available yet.
+- **Technician:** opens assigned jobs only, records technical notes, changes permitted job statuses, records parts used, and uploads before, damage, and after files only for assigned work orders.
 
 Staff sign in at `/login` with their work email and password or a magic link. There is no public registration. Disabled accounts are denied access even if they still have an old browser session.
 
@@ -38,14 +38,14 @@ Staff sign in at `/login` with their work email and password or a magic link. Th
 
 ## Important settings
 
-| Change | Where and how |
-| --- | --- |
-| Shop name, phone, address, invoice prefix, sequence, currency, timezone | `public.business_settings` in Supabase. Change only with an administrator-approved SQL procedure or future settings screen; these affect historical operations and invoice numbering. |
-| Currency/timezone defaults | `src/config/app.ts`. The app currently uses AFN minor units and `Asia/Kabul`. Changing either after production data exists requires a migration and financial review. |
-| Light primary and secondary colors | `src/app/globals.css`. Set `--brand-primary` and `--brand-surface`, plus their foreground variables. If your design brief calls them `LIGHT_PRIMARY_COLOR` and `LIGHT_SECONDARY_COLOR`, map them to those two semantic tokens. |
-| Service catalog | **Services** as an administrator. Archive instead of deleting services with history. |
-| Low-stock thresholds | **Inventory** on the individual part. Low stock means quantity on hand is less than or equal to the threshold. |
-| Email and magic links | Supabase Dashboard Auth settings and the deployment environment variables below. Resend is not installed or required. |
+| Change                                                                  | Where and how                                                                                                                                                                                                                  |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Shop name, phone, address, invoice prefix, sequence, currency, timezone | `public.business_settings` in Supabase. Change only with an administrator-approved SQL procedure or future settings screen; these affect historical operations and invoice numbering.                                          |
+| Currency/timezone defaults                                              | `src/config/app.ts`. The app currently uses AFN minor units and `Asia/Kabul`. Changing either after production data exists requires a migration and financial review.                                                          |
+| Light primary and secondary colors                                      | `src/app/globals.css`. Set `--brand-primary` and `--brand-surface`, plus their foreground variables. If your design brief calls them `LIGHT_PRIMARY_COLOR` and `LIGHT_SECONDARY_COLOR`, map them to those two semantic tokens. |
+| Service catalog                                                         | **Services** as an administrator. Archive instead of deleting services with history.                                                                                                                                           |
+| Low-stock thresholds                                                    | **Inventory** on the individual part. Low stock means quantity on hand is less than or equal to the threshold.                                                                                                                 |
+| Email and magic links                                                   | Supabase Dashboard Auth settings and the deployment environment variables below. Resend is not installed or required.                                                                                                          |
 
 Do not casually change applied migration files, invoice sequence fields, the currency precision, RLS policies, private bucket policies, or `SUPABASE_SERVICE_ROLE_KEY`. Those changes can break security, invoice history, or deployment recovery.
 
@@ -80,7 +80,7 @@ npm run build
 npm run test:e2e
 ```
 
-`test:e2e` needs `npx playwright install chromium` first. The format check currently reports legacy repository-wide formatting differences; do not run a broad formatter as part of a small operational change.
+`test:e2e` needs `npx playwright install chromium` first. Formatting is enforced with `npm run format:check`.
 
 ## Deploy to Vercel and Supabase
 
@@ -95,17 +95,17 @@ npm run test:e2e
 
 ### 2. Configure Vercel
 
-1. Import the repository and select the `docs/deployment-handoff` branch only for preview. Promote the reviewed release branch later.
+1. Import the repository and use the reviewed `release/v1.0.0` branch for staging. Promote only the reviewed merge commit from `main` after every release gate passes.
 2. Vercel detects Next.js automatically. Use **Install Command** `npm ci`, **Build Command** `npm run build`, and Node.js **22**.
 3. Configure the variables for Production, Preview only when required, and Development as appropriate:
 
-| Variable | Where | Notes |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Browser-safe | Production project URL. |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe | Production publishable/anon key. |
-| `NEXT_PUBLIC_APP_URL` | Browser-safe | Exact canonical HTTPS URL, no trailing path. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only | Production secret; required for administrator staff provisioning and Auth bans only. Never expose it to the browser, logs, Git, or Preview unless needed. |
-| `RESEND_API_KEY` | Server-only, optional | Do not add until appointment email is implemented. Resend is not used today. |
+| Variable                               | Where                 | Notes                                                                                                                                                     |
+| -------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Browser-safe          | Production project URL.                                                                                                                                   |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe          | Production publishable/anon key.                                                                                                                          |
+| `NEXT_PUBLIC_APP_URL`                  | Browser-safe          | Exact canonical HTTPS URL, no trailing path.                                                                                                              |
+| `SUPABASE_SERVICE_ROLE_KEY`            | Server-only           | Production secret; required for administrator staff provisioning and Auth bans only. Never expose it to the browser, logs, Git, or Preview unless needed. |
+| `RESEND_API_KEY`                       | Server-only, optional | Do not add until appointment email is implemented. Resend is not used today.                                                                              |
 
 4. Deploy. No `vercel.json` is required by this repository. Do not mark the deployment successful until the health checks below pass.
 
@@ -138,7 +138,7 @@ npm run build
 
 1. Back up the production database and note the current migration history.
 2. Review `git diff`, migration filenames, and release checks. Each change must be a new timestamped migration.
-3. Link the Supabase CLI to the production project with an owner-approved session, then use the Supabase CLI migration deployment command supported by the installed CLI version. Confirm the command is targeting the production project before running it.
+3. Link the Supabase CLI to the production project with an owner-approved session, then run `npx supabase db push --linked`. Confirm the linked project reference is production before running it.
 4. Verify applied migration entries in Supabase migration history and run the production health check.
 5. Regenerate types against local schema after a local reset with `npm run supabase:types`; review and commit the generated type changes separately.
 
@@ -159,17 +159,17 @@ If a deployment fails, stop new operational changes, keep the previous Vercel de
 
 ## Development history and current limits
 
-Implemented phases cover authentication/RBAC, CRM, catalog, work orders, appointments, inventory, offline invoicing, reporting, and production database hardening. Current limits are attachment browser UX, scoped Realtime client invalidation, optional Resend reminders, comprehensive database/RLS tests, and critical-path E2E tests. See `PROJECT_STATE.md` for the current verified state.
+Implemented phases cover authentication/RBAC, CRM, catalog, work orders, appointments, inventory, offline invoicing, reporting, private attachment upload/preview/archive, scoped Realtime refresh, and production database hardening. Staging database/RLS/Storage tests and critical-path E2E validation remain release gates. See `PROJECT_STATE.md` for the current verified state.
 
 ## Troubleshooting
 
-| Problem | Action |
-| --- | --- |
-| “Missing Supabase values” | Copy `.env.example` to `.env.local`; fill the two public Supabase variables and restart the dev server. |
-| Magic link returns to the wrong site | Set `NEXT_PUBLIC_APP_URL`, Supabase Site URL, and `/auth/callback` redirect URL to the same HTTPS domain. |
-| User is denied after sign-in | Confirm the profile is active and has the expected role. Do not change roles in browser metadata. |
-| Local migration fails | Start Docker Desktop, run `npm run supabase:start`, inspect the first failing migration, and add a new migration if a prior one is already applied elsewhere. |
-| Invoice or stock operation fails | Refresh the record, verify its legal status and stock, then check the Supabase database logs. Do not edit ledger rows directly. |
-| Private file is inaccessible | Confirm the bucket is private, the attachment is not archived, the record is assigned to the technician where applicable, and Storage policies match migrations. |
-| Build fails on Vercel | Verify Node 22, `npm ci`, environment-variable names, and Vercel logs. Reproduce locally with `npm run build`. |
-| Playwright cannot run | Install Chromium with `npx playwright install chromium`. |
+| Problem                              | Action                                                                                                                                                           |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| “Missing Supabase values”            | Copy `.env.example` to `.env.local`; fill the two public Supabase variables and restart the dev server.                                                          |
+| Magic link returns to the wrong site | Set `NEXT_PUBLIC_APP_URL`, Supabase Site URL, and `/auth/callback` redirect URL to the same HTTPS domain.                                                        |
+| User is denied after sign-in         | Confirm the profile is active and has the expected role. Do not change roles in browser metadata.                                                                |
+| Local migration fails                | Start Docker Desktop, run `npm run supabase:start`, inspect the first failing migration, and add a new migration if a prior one is already applied elsewhere.    |
+| Invoice or stock operation fails     | Refresh the record, verify its legal status and stock, then check the Supabase database logs. Do not edit ledger rows directly.                                  |
+| Private file is inaccessible         | Confirm the bucket is private, the attachment is not archived, the record is assigned to the technician where applicable, and Storage policies match migrations. |
+| Build fails on Vercel                | Verify Node 22, `npm ci`, environment-variable names, and Vercel logs. Reproduce locally with `npm run build`.                                                   |
+| Playwright cannot run                | Install Chromium with `npx playwright install chromium`.                                                                                                         |

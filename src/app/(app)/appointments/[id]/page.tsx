@@ -7,5 +7,118 @@ import { AppointmentForm } from "@/features/appointments/appointment-form";
 import { canTransitionAppointment } from "@/features/appointments/validation";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
-const states=["checked_in","in_progress","completed","cancelled","no_show"];
-export default async function AppointmentDetail({params}:{params:Promise<{id:string}>}){const staff=await requireRole(["admin","front_desk"]);const {id}=await params;const supabase=await createClient();const {data:appointment}=await supabase.from("appointments").select("id,customer_id,vehicle_id,assigned_technician_id,starts_at,ends_at,status,notes,revision,work_order_id,customers(full_name),vehicles(plate_number,make,model),appointment_services(service_catalog_id)").eq("id",id).maybeSingle();if(!appointment)notFound();const typed=appointment as any;const canEdit=!typed.work_order_id&&!["completed","cancelled","no_show"].includes(typed.status);const inputs=canEdit?await Promise.all([supabase.from("customers").select("id,full_name,phone").is("archived_at",null),supabase.from("vehicles").select("id,customer_id,plate_number,make,model").is("archived_at",null),supabase.from("service_catalog").select("id,name").is("archived_at",null),supabase.from("profiles").select("id,display_name").eq("role","technician").eq("account_status","active")]):null;const badge=typed.status==="cancelled"||typed.status==="no_show"?"cancelled":typed.status==="completed"?"completed":"scheduled";return <section className="space-y-8"><PageHeader eyebrow="Appointment" title={typed.customers?.full_name??"Appointment"} description={`${[typed.vehicles?.make,typed.vehicles?.model].filter(Boolean).join(" ")||typed.vehicles?.plate_number||"Vehicle"} · ${new Date(typed.starts_at).toLocaleString("en-US",{timeZone:"Asia/Kabul"})}`} actions={<StatusBadge status={badge}/>}/><div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]"><div>{canEdit&&inputs?<AppointmentForm admin={staff.role==="admin"} customers={(inputs[0].data??[]).map((item)=>({id:item.id,name:item.full_name,phone:item.phone}))} vehicles={(inputs[1].data??[]).map((item)=>({id:item.id,customerId:item.customer_id,label:[item.make,item.model].filter(Boolean).join(" ")||"Vehicle",plate:item.plate_number}))} services={(inputs[2].data??[]).map((item)=>({id:item.id,name:item.name}))} technicians={(inputs[3].data??[]).map((item)=>({id:item.id,name:item.display_name}))} appointment={{id:typed.id,customerId:typed.customer_id,vehicleId:typed.vehicle_id,technicianId:typed.assigned_technician_id,startsAt:typed.starts_at,endsAt:typed.ends_at,notes:typed.notes,revision:typed.revision,serviceIds:typed.appointment_services.map((service:any)=>service.service_catalog_id)}}/>:<EmptyState title="Appointment details locked" description="Final and converted appointments retain their operational record."/>}</div><aside className="space-y-4"><section className="rounded-lg border bg-card p-5"><h2 className="font-semibold">Status actions</h2>{states.filter((next)=>canTransitionAppointment(typed.status,next)).map((next)=><form action={transitionAppointment} className="mt-3" key={next}><input name="appointmentId" type="hidden" value={typed.id}/><input name="revision" type="hidden" value={typed.revision}/><input name="nextStatus" type="hidden" value={next}/><button className="w-full rounded-md border px-3 py-2 text-sm font-medium capitalize">Mark {next.replaceAll("_"," ")}</button></form>)}</section>{typed.work_order_id?<Link className="block rounded-md bg-brand-primary px-4 py-2 text-center text-sm font-medium text-brand-primary-foreground" href={`/work-orders/${typed.work_order_id}`}>Open work order</Link>:<form action={convertAppointment}><input name="appointmentId" type="hidden" value={typed.id}/><input name="revision" type="hidden" value={typed.revision}/><button className="w-full rounded-md bg-brand-primary px-4 py-2 text-sm font-medium text-brand-primary-foreground">Create work order</button></form>}</aside></div></section>}
+const states = ["checked_in", "in_progress", "completed", "cancelled", "no_show"];
+export default async function AppointmentDetail({ params }: { params: Promise<{ id: string }> }) {
+  const staff = await requireRole(["admin", "front_desk"]);
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: appointment } = await supabase
+    .from("appointments")
+    .select(
+      "id,customer_id,vehicle_id,assigned_technician_id,starts_at,ends_at,status,notes,revision,work_order_id,customers(full_name),vehicles(plate_number,make,model),appointment_services(service_catalog_id)",
+    )
+    .eq("id", id)
+    .maybeSingle();
+  if (!appointment) notFound();
+  const typed = appointment as any;
+  const canEdit = !typed.work_order_id && !["completed", "cancelled", "no_show"].includes(typed.status);
+  const inputs = canEdit
+    ? await Promise.all([
+        supabase.from("customers").select("id,full_name,phone").is("archived_at", null),
+        supabase.from("vehicles").select("id,customer_id,plate_number,make,model").is("archived_at", null),
+        supabase.from("service_catalog").select("id,name").is("archived_at", null),
+        supabase
+          .from("profiles")
+          .select("id,display_name")
+          .eq("role", "technician")
+          .eq("account_status", "active"),
+      ])
+    : null;
+  const badge =
+    typed.status === "cancelled" || typed.status === "no_show"
+      ? "cancelled"
+      : typed.status === "completed"
+        ? "completed"
+        : "scheduled";
+  return (
+    <section className="space-y-8">
+      <PageHeader
+        eyebrow="Appointment"
+        title={typed.customers?.full_name ?? "Appointment"}
+        description={`${[typed.vehicles?.make, typed.vehicles?.model].filter(Boolean).join(" ") || typed.vehicles?.plate_number || "Vehicle"} · ${new Date(typed.starts_at).toLocaleString("en-US", { timeZone: "Asia/Kabul" })}`}
+        actions={<StatusBadge status={badge} />}
+      />
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <div>
+          {canEdit && inputs ? (
+            <AppointmentForm
+              admin={staff.role === "admin"}
+              customers={(inputs[0].data ?? []).map((item) => ({
+                id: item.id,
+                name: item.full_name,
+                phone: item.phone,
+              }))}
+              vehicles={(inputs[1].data ?? []).map((item) => ({
+                id: item.id,
+                customerId: item.customer_id,
+                label: [item.make, item.model].filter(Boolean).join(" ") || "Vehicle",
+                plate: item.plate_number,
+              }))}
+              services={(inputs[2].data ?? []).map((item) => ({ id: item.id, name: item.name }))}
+              technicians={(inputs[3].data ?? []).map((item) => ({ id: item.id, name: item.display_name }))}
+              appointment={{
+                id: typed.id,
+                customerId: typed.customer_id,
+                vehicleId: typed.vehicle_id,
+                technicianId: typed.assigned_technician_id,
+                startsAt: typed.starts_at,
+                endsAt: typed.ends_at,
+                notes: typed.notes,
+                revision: typed.revision,
+                serviceIds: typed.appointment_services.map((service: any) => service.service_catalog_id),
+              }}
+            />
+          ) : (
+            <EmptyState
+              title="Appointment details locked"
+              description="Final and converted appointments retain their operational record."
+            />
+          )}
+        </div>
+        <aside className="space-y-4">
+          <section className="rounded-lg border bg-card p-5">
+            <h2 className="font-semibold">Status actions</h2>
+            {states
+              .filter((next) => canTransitionAppointment(typed.status, next))
+              .map((next) => (
+                <form action={transitionAppointment} className="mt-3" key={next}>
+                  <input name="appointmentId" type="hidden" value={typed.id} />
+                  <input name="revision" type="hidden" value={typed.revision} />
+                  <input name="nextStatus" type="hidden" value={next} />
+                  <button className="w-full rounded-md border px-3 py-2 text-sm font-medium capitalize">
+                    Mark {next.replaceAll("_", " ")}
+                  </button>
+                </form>
+              ))}
+          </section>
+          {typed.work_order_id ? (
+            <Link
+              className="block rounded-md bg-brand-primary px-4 py-2 text-center text-sm font-medium text-brand-primary-foreground"
+              href={`/work-orders/${typed.work_order_id}`}
+            >
+              Open work order
+            </Link>
+          ) : (
+            <form action={convertAppointment}>
+              <input name="appointmentId" type="hidden" value={typed.id} />
+              <input name="revision" type="hidden" value={typed.revision} />
+              <button className="w-full rounded-md bg-brand-primary px-4 py-2 text-sm font-medium text-brand-primary-foreground">
+                Create work order
+              </button>
+            </form>
+          )}
+        </aside>
+      </div>
+    </section>
+  );
+}

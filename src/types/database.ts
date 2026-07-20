@@ -131,29 +131,159 @@ export type Database = {
       is_active_staff: { Args: Record<string, never>; Returns: boolean };
       has_role: { Args: { allowed_roles: StaffRole[] }; Returns: boolean };
       is_assigned_technician: { Args: { target_work_order_id: string }; Returns: boolean };
-      create_work_order: { Args: { target_customer_id: string; target_vehicle_id: string; target_technician_id: string | null; concern: string | null; internal_note: string | null; estimated_completion: string | null; intake_mileage: number | null; selected_services: Json }; Returns: string };
-      update_work_order_details: { Args: { target_work_order_id: string; target_technician_id: string | null; concern: string | null; internal_note: string | null; estimated_completion: string | null; intake_mileage: number | null; selected_services: Json }; Returns: undefined };
-      transition_work_order: { Args: { target_work_order_id: string; next_status: Database["public"]["Enums"]["work_order_status"]; note: string | null }; Returns: undefined };
+      create_work_order: {
+        Args: {
+          target_customer_id: string;
+          target_vehicle_id: string;
+          target_technician_id: string | null;
+          concern: string | null;
+          internal_note: string | null;
+          estimated_completion: string | null;
+          intake_mileage: number | null;
+          selected_services: Json;
+        };
+        Returns: string;
+      };
+      update_work_order_details: {
+        Args: {
+          target_work_order_id: string;
+          target_technician_id: string | null;
+          concern: string | null;
+          internal_note: string | null;
+          estimated_completion: string | null;
+          intake_mileage: number | null;
+          selected_services: Json;
+        };
+        Returns: undefined;
+      };
+      transition_work_order: {
+        Args: {
+          target_work_order_id: string;
+          next_status: Database["public"]["Enums"]["work_order_status"];
+          note: string | null;
+        };
+        Returns: undefined;
+      };
       add_technician_note: { Args: { target_work_order_id: string; note: string }; Returns: undefined };
-      save_appointment: { Args: { target_appointment_id: string | null; target_customer_id: string; target_vehicle_id: string; target_technician_id: string | null; target_starts_at: string; target_ends_at: string; target_notes: string | null; selected_services: Json; expected_revision: number | null; allow_conflict: boolean }; Returns: string };
-      reschedule_appointment: { Args: { target_appointment_id: string; target_starts_at: string; target_ends_at: string; expected_revision: number; allow_conflict: boolean }; Returns: undefined };
-      transition_appointment: { Args: { target_appointment_id: string; next_status: Database["public"]["Enums"]["appointment_status"]; expected_revision: number }; Returns: undefined };
-      convert_appointment_to_work_order: { Args: { target_appointment_id: string; expected_revision: number }; Returns: string };
-      restock_part: { Args: { target_part_id: string; quantity: number; reason: string | null }; Returns: string };
-      correct_inventory: { Args: { target_part_id: string; quantity_delta: number; reason: string }; Returns: string };
-      confirm_work_order_part_usage: { Args: { target_work_order_id: string; target_part_id: string; quantity: number }; Returns: string };
-      reverse_work_order_part_usage: { Args: { target_work_order_part_id: string; reason: string }; Returns: string };
-      create_part: { Args: { part_name: string; part_sku: string; part_category: string | null; part_unit: string; opening_quantity: number; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
-      save_part: { Args: { target_part_id: string; part_name: string; part_sku: string; part_category: string | null; part_unit: string; threshold: number; cost_minor: number | null; selling_minor: number }; Returns: string };
+      save_appointment: {
+        Args: {
+          target_appointment_id: string | null;
+          target_customer_id: string;
+          target_vehicle_id: string;
+          target_technician_id: string | null;
+          target_starts_at: string;
+          target_ends_at: string;
+          target_notes: string | null;
+          selected_services: Json;
+          expected_revision: number | null;
+          allow_conflict: boolean;
+        };
+        Returns: string;
+      };
+      reschedule_appointment: {
+        Args: {
+          target_appointment_id: string;
+          target_starts_at: string;
+          target_ends_at: string;
+          expected_revision: number;
+          allow_conflict: boolean;
+        };
+        Returns: undefined;
+      };
+      transition_appointment: {
+        Args: {
+          target_appointment_id: string;
+          next_status: Database["public"]["Enums"]["appointment_status"];
+          expected_revision: number;
+        };
+        Returns: undefined;
+      };
+      convert_appointment_to_work_order: {
+        Args: { target_appointment_id: string; expected_revision: number };
+        Returns: string;
+      };
+      restock_part: {
+        Args: { target_part_id: string; quantity: number; reason: string | null };
+        Returns: string;
+      };
+      correct_inventory: {
+        Args: { target_part_id: string; quantity_delta: number; reason: string };
+        Returns: string;
+      };
+      confirm_work_order_part_usage: {
+        Args: { target_work_order_id: string; target_part_id: string; quantity: number };
+        Returns: string;
+      };
+      reverse_work_order_part_usage: {
+        Args: { target_work_order_part_id: string; reason: string };
+        Returns: string;
+      };
+      create_part: {
+        Args: {
+          part_name: string;
+          part_sku: string;
+          part_category: string | null;
+          part_unit: string;
+          opening_quantity: number;
+          threshold: number;
+          cost_minor: number | null;
+          selling_minor: number;
+        };
+        Returns: string;
+      };
+      save_part: {
+        Args: {
+          target_part_id: string;
+          part_name: string;
+          part_sku: string;
+          part_category: string | null;
+          part_unit: string;
+          threshold: number;
+          cost_minor: number | null;
+          selling_minor: number;
+        };
+        Returns: string;
+      };
       set_part_archived: { Args: { target_part_id: string; archived: boolean }; Returns: undefined };
-      save_service: { Args: { target_service_id: string | null; service_name: string; service_category: string | null; service_description: string | null; price_minor: number; duration_minutes: number }; Returns: string };
+      save_service: {
+        Args: {
+          target_service_id: string | null;
+          service_name: string;
+          service_category: string | null;
+          service_description: string | null;
+          price_minor: number;
+          duration_minutes: number;
+        };
+        Returns: string;
+      };
       set_service_archived: { Args: { target_service_id: string; archived: boolean }; Returns: undefined };
       set_customer_archived: { Args: { target_customer_id: string; archived: boolean }; Returns: undefined };
       set_vehicle_archived: { Args: { target_vehicle_id: string; archived: boolean }; Returns: undefined };
       create_invoice_from_work_order: { Args: { target_work_order_id: string }; Returns: string };
-      record_offline_payment: { Args: { target_invoice_id: string; payment_method: Database["public"]["Enums"]["payment_method"]; payment_reference: string | null; payment_notes: string | null }; Returns: string };
+      record_offline_payment: {
+        Args: {
+          target_invoice_id: string;
+          payment_method: Database["public"]["Enums"]["payment_method"];
+          payment_reference: string | null;
+          payment_notes: string | null;
+        };
+        Returns: string;
+      };
       void_invoice: { Args: { target_invoice_id: string; reason: string }; Returns: undefined };
-      register_work_order_attachment: { Args: { target_vehicle_id: string; target_work_order_id: string; target_category: Database["public"]["Enums"]["attachment_category"]; target_path: string; target_filename: string; target_mime: string; target_bytes: number; target_caption: string | null }; Returns: string };
+      register_work_order_attachment: {
+        Args: {
+          target_vehicle_id: string;
+          target_work_order_id: string;
+          target_category: Database["public"]["Enums"]["attachment_category"];
+          target_path: string;
+          target_filename: string;
+          target_mime: string;
+          target_bytes: number;
+          target_caption: string | null;
+        };
+        Returns: string;
+      };
+      archive_work_order_attachment: { Args: { target_attachment_id: string }; Returns: undefined };
     };
     Enums: {
       staff_role: StaffRole;
