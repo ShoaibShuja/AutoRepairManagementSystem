@@ -144,6 +144,8 @@ npm run build
 
 `20260720000450_appointment_statuses.sql` must run and commit before `20260720000500_appointment_workflow.sql`. PostgreSQL does not allow a newly added enum value to be used by an index or function in the same transaction.
 
+`20260720000600_inventory_workflow.sql` depends on the low-stock and inventory-movement indexes created by the core schema and must not recreate them.
+
 If a deployment fails, stop new operational changes, keep the previous Vercel deployment available, inspect Vercel/Supabase logs, and fix forward with a new migration or application commit. Never edit or delete an applied migration, force-push, or manually alter migration history to “make it green.”
 
 ## Backups and maintenance
