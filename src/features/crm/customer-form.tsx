@@ -76,7 +76,9 @@ export function CustomerForm({ customer }: { customer?: Customer }) {
           {state.message}
         </p>
       ) : null}
-      <Button disabled={pending}>{pending ? "Saving…" : editing ? "Save customer" : "Save customer"}</Button>
+      <Button disabled={pending}>
+        {pending ? "Saving…" : editing ? "Save customer" : "Create customer"}
+      </Button>
     </form>
   );
 }

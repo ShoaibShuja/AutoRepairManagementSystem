@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 export function SearchInput({
   label = "Search",
+  className,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label?: string }) {
   return (
@@ -16,7 +17,10 @@ export function SearchInput({
         className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
       />
       <input
-        className="h-10 w-full rounded-md border bg-background pl-9 pr-3 text-sm placeholder:text-muted-foreground"
+        className={cn(
+          "h-11 w-full rounded-xl border bg-background pl-9 pr-3 text-sm placeholder:text-muted-foreground",
+          className,
+        )}
         type="search"
         {...props}
       />

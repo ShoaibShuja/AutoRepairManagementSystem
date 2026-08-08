@@ -16,7 +16,7 @@ Staff sign in at `/login` with their work email and password or a magic link. Th
 
 ### Front desk
 
-1. Create or find a customer in **Customers**, then add the customer’s vehicle.
+1. Create or find a customer in **Customers**. Use **Add customer** to open the customer form, then add the customer’s vehicle from their record.
 2. Create an **Appointment** with the customer, vehicle, services, time, and optional technician. Use the edit page when drag-and-drop is not convenient.
 3. Convert a checked-in appointment to a **Work order**, or create a work order directly. Assign a technician and follow its status through completion.
 4. In **Inventory**, restock parts when they arrive. Use an administrator correction only when the physical count differs and always record a reason.
