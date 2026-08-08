@@ -4,7 +4,7 @@ Staff-only, single-location car wash and auto repair operations management. It c
 
 ## Release candidate
 
-The current release candidate is `release/v1.0.0`. Follow the project guide for the approved staging, migration, rollback, and production verification sequence. Do not deploy from historic feature or documentation branches.
+The version 1 release candidate is merged to `main` and awaiting staging verification. Follow the project guide for the approved staging, migration, rollback, and production verification sequence. Do not deploy from historic feature or documentation branches.
 
 ## Stack
 
