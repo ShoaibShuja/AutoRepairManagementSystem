@@ -38,14 +38,14 @@ Staff sign in at `/login` with their work email and password or a magic link. Th
 
 ## Important settings
 
-| Change                                                                  | Where and how                                                                                                                                                                                                                  |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Shop name, phone, address, invoice prefix, sequence, currency, timezone | `public.business_settings` in Supabase. Change only with an administrator-approved SQL procedure or future settings screen; these affect historical operations and invoice numbering.                                          |
-| Currency/timezone defaults                                              | `src/config/app.ts`. The app currently uses AFN minor units and `Asia/Kabul`. Changing either after production data exists requires a migration and financial review.                                                          |
-| Light primary and secondary colors                                      | `src/app/globals.css`. Set `--brand-primary` and `--brand-surface`, plus their foreground variables. If your design brief calls them `LIGHT_PRIMARY_COLOR` and `LIGHT_SECONDARY_COLOR`, map them to those two semantic tokens. |
-| Service catalog                                                         | **Services** as an administrator. Archive instead of deleting services with history.                                                                                                                                           |
-| Low-stock thresholds                                                    | **Inventory** on the individual part. Low stock means quantity on hand is less than or equal to the threshold.                                                                                                                 |
-| Email and magic links                                                   | Supabase Dashboard Auth settings and the deployment environment variables below. Resend is not installed or required.                                                                                                          |
+| Change                                                                  | Where and how                                                                                                                                                                                                                 |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shop name, phone, address, invoice prefix, sequence, currency, timezone | `public.business_settings` in Supabase. Change only with an administrator-approved SQL procedure or future settings screen; these affect historical operations and invoice numbering.                                         |
+| Currency/timezone defaults                                              | `src/config/app.ts`. The app currently uses AFN minor units and `Asia/Kabul`. Changing either after production data exists requires a migration and financial review.                                                         |
+| Light primary and secondary colors                                      | `src/app/globals.css`. The current premium blue palette is defined through `--brand-primary` and `--brand-surface`, plus their foreground variables. Replace only these semantic tokens when final brand colors are approved. |
+| Service catalog                                                         | **Services** as an administrator. Archive instead of deleting services with history.                                                                                                                                          |
+| Low-stock thresholds                                                    | **Inventory** on the individual part. Low stock means quantity on hand is less than or equal to the threshold.                                                                                                                |
+| Email and magic links                                                   | Supabase Dashboard Auth settings and the deployment environment variables below. Resend is not installed or required.                                                                                                         |
 
 Do not casually change applied migration files, invoice sequence fields, the currency precision, RLS policies, private bucket policies, or `SUPABASE_SERVICE_ROLE_KEY`. Those changes can break security, invoice history, or deployment recovery.
 
@@ -163,7 +163,7 @@ If a deployment fails, stop new operational changes, keep the previous Vercel de
 
 ## Development history and current limits
 
-Implemented phases cover authentication/RBAC, CRM, catalog, work orders, appointments, inventory, offline invoicing, reporting, private attachment upload/preview/archive, scoped Realtime refresh, and production database hardening. Staging database/RLS/Storage tests and critical-path E2E validation remain release gates. See `PROJECT_STATE.md` for the current verified state.
+Implemented phases cover authentication/RBAC, CRM, catalog, work orders, appointments, inventory, offline invoicing, reporting, private attachment upload/preview/archive, scoped Realtime refresh, production database hardening, and a role-safe premium operational dashboard. Staging database/RLS/Storage tests and critical-path E2E validation remain release gates. See `PROJECT_STATE.md` for the current verified state.
 
 ## Troubleshooting
 

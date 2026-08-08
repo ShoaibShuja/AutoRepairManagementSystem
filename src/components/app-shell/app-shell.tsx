@@ -20,11 +20,11 @@ export function AppShell({
   const breadcrumb = getBreadcrumb(pathname);
   const nav = (
     <>
-      <div className="flex h-16 items-center gap-3 border-b px-5">
-        <span className="grid size-8 place-items-center rounded-md bg-brand-primary text-brand-primary-foreground">
+      <div className="flex h-[4.5rem] items-center gap-3 border-b border-border/80 px-5">
+        <span className="grid size-9 place-items-center rounded-xl bg-brand-primary text-brand-primary-foreground shadow-[0_8px_20px_color-mix(in_oklab,var(--brand-primary),transparent_72%)]">
           <Wrench aria-hidden="true" className="size-4" />
         </span>
-        <span className="font-semibold tracking-tight">AutoCare Pro</span>
+        <span className="font-semibold tracking-[-0.03em]">AutoCare Pro</span>
       </div>
       <nav aria-label="Primary navigation" className="flex-1 space-y-1 p-3">
         {navigation.map(({ href, icon: Icon, label }) => {
@@ -33,10 +33,10 @@ export function AppShell({
             <Link
               aria-current={current ? "page" : undefined}
               className={cn(
-                "flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors",
+                "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors",
                 current
-                  ? "bg-brand-surface text-brand-surface-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  ? "bg-brand-primary text-brand-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-brand-surface hover:text-brand-surface-foreground",
               )}
               href={href}
               key={href}
@@ -48,18 +48,20 @@ export function AppShell({
           );
         })}
       </nav>
-      <div className="border-t p-3 text-xs text-muted-foreground">Single-location operations workspace</div>
+      <div className="m-3 rounded-xl border border-brand-primary/10 bg-brand-surface/70 p-3 text-xs leading-5 text-brand-surface-foreground">
+        Single-location operations workspace
+      </div>
     </>
   );
   return (
-    <div className="min-h-dvh bg-background lg:grid lg:grid-cols-[15.5rem_minmax(0,1fr)]">
+    <div className="min-h-dvh bg-background lg:grid lg:grid-cols-[16.25rem_minmax(0,1fr)]">
       <a
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-card focus:p-3"
         href="#main-content"
       >
         Skip to content
       </a>
-      <aside className="hidden min-h-dvh border-r bg-card lg:flex lg:flex-col">{nav}</aside>
+      <aside className="hidden min-h-dvh border-r border-border/80 bg-card lg:flex lg:flex-col">{nav}</aside>
       {menuOpen ? (
         <div
           className="fixed inset-0 z-50 lg:hidden"
@@ -88,8 +90,8 @@ export function AppShell({
         </div>
       ) : null}
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 border-b bg-card/95">
-          <div className="flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-30 border-b border-border/80 bg-card/90 backdrop-blur-md">
+          <div className="flex h-[4.5rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
             <Button
               aria-label="Open navigation menu"
               className="lg:hidden"
@@ -115,7 +117,7 @@ export function AppShell({
               ))}
             </nav>
             <details className="relative shrink-0">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-muted [&::-webkit-details-marker]:hidden">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl px-2 text-left text-sm hover:bg-muted [&::-webkit-details-marker]:hidden">
                 <span
                   className="grid size-8 place-items-center rounded-full bg-brand-surface text-xs font-semibold text-brand-surface-foreground"
                   aria-hidden="true"
@@ -124,7 +126,7 @@ export function AppShell({
                 </span>
                 <span className="hidden max-w-36 truncate sm:block">{staff.display_name}</span>
               </summary>
-              <div className="absolute right-0 top-[calc(100%+0.5rem)] w-64 rounded-md border bg-card p-2 shadow-lg">
+              <div className="absolute right-0 top-[calc(100%+0.5rem)] w-64 rounded-xl border bg-card p-2 shadow-lg">
                 <div className="border-b px-2 py-2 text-sm">
                   <p className="truncate font-medium">{staff.display_name}</p>
                   <p className="truncate text-xs text-muted-foreground">{staff.email}</p>

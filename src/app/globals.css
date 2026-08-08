@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(0.985 0.002 247.84);
-  --foreground: oklch(0.208 0.016 264.42);
-  --brand-primary: oklch(0.278 0.029 256.85);
-  --brand-primary-foreground: oklch(0.985 0.002 247.84);
-  --brand-surface: oklch(0.945 0.011 247.9);
-  --brand-surface-foreground: oklch(0.278 0.029 256.85);
+  --background: oklch(0.972 0.012 248.2);
+  --foreground: oklch(0.242 0.042 262.6);
+  --brand-primary: oklch(0.348 0.105 258.4);
+  --brand-primary-foreground: oklch(0.985 0.008 248.2);
+  --brand-surface: oklch(0.929 0.042 250.8);
+  --brand-surface-foreground: oklch(0.355 0.089 258.7);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.208 0.016 264.42);
-  --muted: oklch(0.955 0.006 247.9);
-  --muted-foreground: oklch(0.51 0.025 257.6);
-  --border: oklch(0.892 0.011 247.9);
-  --input: oklch(0.892 0.011 247.9);
-  --ring: oklch(0.492 0.042 257.1);
+  --card-foreground: oklch(0.242 0.042 262.6);
+  --muted: oklch(0.946 0.015 248.2);
+  --muted-foreground: oklch(0.505 0.039 260.2);
+  --border: oklch(0.884 0.021 250.6);
+  --input: oklch(0.884 0.021 250.6);
+  --ring: oklch(0.548 0.149 258.7);
   --destructive: oklch(0.577 0.217 27.33);
-  --success: oklch(0.527 0.154 150.07);
-  --warning: oklch(0.666 0.162 75.45);
-  --radius: 0.625rem;
+  --success: oklch(0.556 0.153 158.2);
+  --warning: oklch(0.694 0.154 74.1);
+  --radius: 0.875rem;
 }
 
 @theme inline {
@@ -55,7 +55,7 @@ body {
   min-height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 button,
