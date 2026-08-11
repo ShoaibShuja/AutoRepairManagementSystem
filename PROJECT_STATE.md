@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-07-20
+Last updated: 2026-08-11
 Current phase: Version 1 staging-release verification
 Current branch: codex/simplify-inventory-adjustments
 Current status: The version 1 release candidate, premium dashboard refinement, customer-directory UI refinement, customer-search fix, and simplified money inputs were merged to `main`. This branch simplifies inventory adjustments with no database changes; production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
@@ -62,7 +62,7 @@ Current status: The version 1 release candidate, premium dashboard refinement, c
 
 ## Tests and Quality Checks
 
-- Passed for the release candidate: `npm ci`, `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test` (20 tests), `npm run build`, and `git diff --check`.
+- Passed for the current inventory-adjustment branch: targeted Prettier checks, `npm run lint`, `npm run typecheck`, `npm test` (23 tests), `npm run build`, and `git diff --check`. The original release candidate also passed `npm ci` and repository-wide `npm run format:check` with 20 tests.
 - Not executable in the release-candidate environment: Docker-backed Supabase reset/type generation/database-RLS-Storage tests; Chromium-based Playwright test (browser installation timed out).
 - Required before production release: `npm ci`, `npm run format:check`, a clean `npm run build`, local Supabase reset/type generation, database/RLS/Storage tests, and Playwright critical-path checks.
 - Production release is prohibited while a critical migration, database/RLS/Storage, browser, or external setup check is unverified.
