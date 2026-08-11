@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { appConfig } from "@/config/app";
 import "./globals.css";
 
 const geist = Geist({
@@ -17,8 +18,8 @@ const themeScript = `try {
 
 export const metadata: Metadata = {
   title: {
-    default: "AutoCare Pro",
-    template: "%s | AutoCare Pro",
+    default: appConfig.name,
+    template: `%s | ${appConfig.name}`,
   },
   description: "Single-location car wash and auto repair operations management.",
 };

@@ -51,6 +51,7 @@ Current status: The version 1 release candidate, premium dashboard refinement, c
 
 ## Recent Changes
 
+- Renamed the application to Hashimi Pro across visible product surfaces, document titles, and metadata. The protected header now shows a compact Admin, Front desk, or Technician indicator beside the staff name.
 - Added a persistent system-wide dark mode. The sign-in page and protected workspace both expose the toggle; semantic CSS tokens apply the selected palette across existing screens without changing role or data behavior.
 - Added `supabase/demo-seed.sql`, a SQL Editor-ready, re-runnable non-production dataset with fictional staff, customers, vehicles, services, appointments, inventory, work orders, invoices, payments, and activity history. It intentionally does not seed Storage objects or usable login credentials.
 - Appointment creation now treats its blank optimistic-revision field as absent, so leaving optional technician and notes fields empty does not produce an unrelated number-validation error. Customer, vehicle, times, and at least one requested service remain required.

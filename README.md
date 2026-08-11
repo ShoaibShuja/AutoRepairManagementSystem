@@ -1,4 +1,4 @@
-# AutoCare Pro
+# Hashimi Pro
 
 Staff-only, single-location car wash and auto repair operations management. It covers customers, vehicles, appointments, work orders, inventory, offline invoices, and role-based staff access.
 
