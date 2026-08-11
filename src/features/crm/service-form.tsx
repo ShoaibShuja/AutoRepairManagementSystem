@@ -2,6 +2,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormSection, ServerError } from "@/components/operational";
+import { minorUnitsToMoneyInput } from "@/lib/money";
 import { createService, updateService, type CrmActionState } from "./actions";
 type Service = {
   id?: string;
@@ -47,15 +48,23 @@ export function ServiceForm({ service }: { service?: Service }) {
             </select>
           </label>
           <label className="text-sm font-medium">
-            Standard price (minor units) *
+            Standard price (AFN) *
             <input
               className="mt-1 h-10 w-full rounded-md border bg-background px-3"
-              defaultValue={service?.standardPriceMinor ?? ""}
-              min="0"
-              name="standardPriceMinor"
+              defaultValue={
+                service?.standardPriceMinor === undefined
+                  ? ""
+                  : minorUnitsToMoneyInput(service.standardPriceMinor)
+              }
+              inputMode="decimal"
+              name="standardPrice"
+              placeholder="For example, 1500 or 1500.50"
               required
-              type="number"
+              type="text"
             />
+            <span className="mt-1 block text-xs font-normal text-muted-foreground">
+              Whole amounts do not need decimals.
+            </span>
           </label>
           <label className="text-sm font-medium">
             Estimated duration (minutes) *

@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormSection, ServerError } from "@/components/operational";
+import { formatMoney } from "@/lib/format";
 import { createWorkOrder, updateWorkOrder, type WorkOrderActionState } from "./actions";
 
 type Customer = { id: string; fullName: string; phone: string | null };
@@ -153,7 +154,7 @@ export function WorkOrderForm({
               />
               <span>
                 <span className="block font-medium">
-                  {service.name} · {service.price}
+                  {service.name} · {formatMoney(service.price)}
                 </span>
                 <span className="text-muted-foreground">{service.description || "No description"}</span>
               </span>

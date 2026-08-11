@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/server";
+import { moneyInputToMinorUnits } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import { customerSchema, serviceSchema, vehicleSchema } from "./validation";
 
@@ -160,10 +161,13 @@ export async function setVehicleArchived(formData: FormData) {
 }
 export async function createService(_: CrmActionState, formData: FormData): Promise<CrmActionState> {
   await requireRole(["admin"]);
+  const standardPriceMinor = moneyInputToMinorUnits(value(formData, "standardPrice"));
+  if (standardPriceMinor === null)
+    return { error: "Enter a valid non-negative price with up to 2 decimal places." };
   const parsed = serviceSchema.safeParse({
     name: value(formData, "name"),
     category: value(formData, "category"),
-    standardPriceMinor: value(formData, "standardPriceMinor"),
+    standardPriceMinor,
     defaultDurationMinutes: value(formData, "defaultDurationMinutes"),
     description: value(formData, "description"),
   });
@@ -184,10 +188,13 @@ export async function createService(_: CrmActionState, formData: FormData): Prom
 }
 export async function updateService(_: CrmActionState, formData: FormData): Promise<CrmActionState> {
   await requireRole(["admin"]);
+  const standardPriceMinor = moneyInputToMinorUnits(value(formData, "standardPrice"));
+  if (standardPriceMinor === null)
+    return { error: "Enter a valid non-negative price with up to 2 decimal places." };
   const parsed = serviceSchema.safeParse({
     name: value(formData, "name"),
     category: value(formData, "category"),
-    standardPriceMinor: value(formData, "standardPriceMinor"),
+    standardPriceMinor,
     defaultDurationMinutes: value(formData, "defaultDurationMinutes"),
     description: value(formData, "description"),
   });

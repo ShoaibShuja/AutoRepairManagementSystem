@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { requireRole, requireStaff } from "@/lib/auth/server";
+import { moneyInputToMinorUnits } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import { partSchema } from "./validation";
 export type InventoryActionState = { error?: string; message?: string };
@@ -8,6 +9,11 @@ const value = (data: FormData, name: string) => String(data.get(name) ?? "");
 export async function savePart(_: InventoryActionState, formData: FormData): Promise<InventoryActionState> {
   const staff = await requireRole(["admin", "front_desk"]);
   const id = value(formData, "partId");
+  const costInput = value(formData, "cost");
+  const cost = costInput.trim() ? moneyInputToMinorUnits(costInput) : null;
+  const selling = moneyInputToMinorUnits(value(formData, "selling"));
+  if ((costInput.trim() && cost === null) || selling === null)
+    return { error: "Enter a valid non-negative price with up to 2 decimal places." };
   const parsed = partSchema.safeParse({
     name: value(formData, "name"),
     sku: value(formData, "sku"),
@@ -15,8 +21,8 @@ export async function savePart(_: InventoryActionState, formData: FormData): Pro
     unit: value(formData, "unit"),
     quantity: id ? "0" : value(formData, "quantity"),
     threshold: value(formData, "threshold"),
-    cost: value(formData, "cost"),
-    selling: value(formData, "selling"),
+    cost,
+    selling,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
   if (parsed.data.cost !== null && staff.role !== "admin")

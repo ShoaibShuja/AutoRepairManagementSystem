@@ -2,6 +2,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { FormSection, ServerError } from "@/components/operational";
+import { minorUnitsToMoneyInput } from "@/lib/money";
 import { savePart, type InventoryActionState } from "./actions";
 type Part = {
   id?: string;
@@ -82,26 +83,33 @@ export function PartForm({ part, admin }: { part?: Part; admin: boolean }) {
           </label>
           {admin ? (
             <label className="text-sm font-medium">
-              Cost (minor units)
+              Cost (AFN, optional)
               <input
                 className="mt-1 h-10 w-full rounded-md border bg-background px-3"
-                defaultValue={part?.cost ?? ""}
+                defaultValue={
+                  part?.cost === undefined || part.cost === null ? "" : minorUnitsToMoneyInput(part.cost)
+                }
+                inputMode="decimal"
                 name="cost"
-                min="0"
-                type="number"
+                placeholder="For example, 1000"
+                type="text"
               />
             </label>
           ) : null}
           <label className="text-sm font-medium">
-            Selling price (minor units) *
+            Selling price (AFN) *
             <input
               className="mt-1 h-10 w-full rounded-md border bg-background px-3"
-              defaultValue={part?.selling ?? 0}
+              defaultValue={part?.selling === undefined ? "" : minorUnitsToMoneyInput(part.selling)}
+              inputMode="decimal"
               name="selling"
-              min="0"
+              placeholder="For example, 1500 or 1500.50"
               required
-              type="number"
+              type="text"
             />
+            <span className="mt-1 block text-xs font-normal text-muted-foreground">
+              Whole amounts do not need decimals.
+            </span>
           </label>
         </div>
       </FormSection>
