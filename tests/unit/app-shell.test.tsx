@@ -72,4 +72,13 @@ describe("authenticated UI foundation", () => {
     await user.click(screen.getByRole("button", { name: "Close navigation menu" }));
     expect(screen.queryByRole("dialog", { name: "Navigation menu" })).not.toBeInTheDocument();
   });
+
+  it("persists the selected display mode", async () => {
+    const { ThemeToggle } = await import("@/components/theme-toggle");
+    const user = (await import("@testing-library/user-event")).default.setup();
+    render(<ThemeToggle />);
+    await user.click(screen.getByRole("button", { name: "Switch to dark mode" }));
+    expect(document.documentElement).toHaveClass("dark");
+    expect(localStorage.getItem("autocare-theme")).toBe("dark");
+  });
 });

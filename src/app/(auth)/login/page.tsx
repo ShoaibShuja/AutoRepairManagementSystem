@@ -3,11 +3,15 @@ import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/login-form";
 import { getCurrentStaff } from "@/lib/auth/server";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function LoginPage() {
   if (await getCurrentStaff()) redirect("/dashboard");
   return (
-    <main className="grid min-h-dvh place-items-center bg-brand-surface px-5 py-10">
+    <main className="relative grid min-h-dvh place-items-center bg-brand-surface px-5 py-10">
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
       <section className="w-full max-w-md rounded-xl border bg-card p-6 shadow-sm sm:p-8">
         <div className="mb-7 flex items-center gap-3">
           <div className="grid size-10 place-items-center rounded-lg bg-brand-primary text-brand-primary-foreground">

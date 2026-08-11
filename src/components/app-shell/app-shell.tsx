@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getBreadcrumb, getNavigationForRole } from "@/components/app-shell/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/features/auth/actions";
 import type { StaffRole } from "@/lib/auth/permissions";
@@ -116,6 +117,7 @@ export function AppShell({
                 </span>
               ))}
             </nav>
+            <ThemeToggle />
             <details className="relative shrink-0">
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl px-2 text-left text-sm hover:bg-muted [&::-webkit-details-marker]:hidden">
                 <span
