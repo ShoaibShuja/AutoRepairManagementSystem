@@ -2,8 +2,8 @@
 
 Last updated: 2026-07-20
 Current phase: Version 1 staging-release verification
-Current branch: codex/refine-customers-ui
-Current status: The version 1 release candidate and premium dashboard refinement were merged to `main`. This branch contains a customer-directory UI refinement with no database changes; production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
+Current branch: codex/fix-customer-search
+Current status: The version 1 release candidate, premium dashboard refinement, and customer-directory UI refinement were merged to `main`. This branch fixes customer search predicate construction with no database changes; production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
 
 ## Working Features
 
@@ -51,6 +51,7 @@ Current status: The version 1 release candidate and premium dashboard refinement
 
 ## Recent Changes
 
+- Fixed customer search so name-only input no longer expands into an empty phone predicate that matches the full phone directory. Search terms are normalized and special wildcard syntax is removed before the authorized database query.
 - Reworked the customer directory with a primary add-customer dialog, a count-aware responsive record list, richer contact and activity details, and improved touch-sized search controls. Existing role guards, server validation, archive behavior, and customer search semantics are unchanged.
 - Refreshed the dashboard and protected app shell with a premium blue service-bay visual system, role-safe command-center metrics, live follow-up panels, and direct operational links. The dashboard continues to use existing authoritative queries and never shows payment details to technicians.
 - Added local Supabase CLI configuration, safe demo seed catalog/inventory data, and reset/type-generation scripts.

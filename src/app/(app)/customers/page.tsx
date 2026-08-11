@@ -9,6 +9,7 @@ import {
   StatusBadge,
 } from "@/components/operational";
 import { CustomerCreateDialog } from "@/features/crm/customer-create-dialog";
+import { customerSearchFilter } from "@/features/crm/search";
 import { requireRole } from "@/lib/auth/server";
 import { formatRelativeTime } from "@/lib/date";
 import { createClient } from "@/lib/supabase/server";
@@ -25,10 +26,9 @@ export default async function CustomersPage({
     .select("id, full_name, phone, email, archived_at, updated_at", { count: "exact" })
     .order("updated_at", { ascending: false })
     .limit(25);
-  if (query)
-    request = request.or(
-      `name_normalized.ilike.%${query.toLowerCase()}%,phone_normalized.ilike.%${query.replace(/[^0-9+]/g, "")}%`,
-    );
+  const searchFilter = customerSearchFilter(query);
+  if (searchFilter) request = request.or(searchFilter);
+  if (query && !searchFilter) request = request.eq("id", "00000000-0000-0000-0000-000000000000");
   const { data, error, count } = await request;
   const customers = (data ?? []) as Array<{
     id: string;

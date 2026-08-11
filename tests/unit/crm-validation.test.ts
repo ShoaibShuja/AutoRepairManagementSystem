@@ -6,10 +6,18 @@ import {
   serviceSchema,
   vehicleSchema,
 } from "@/features/crm/validation";
+import { customerSearchFilter } from "@/features/crm/search";
 describe("CRM validation", () => {
   it("normalizes phone and plates", () => {
     expect(normalizePhone("+93 (700) 123-456")).toBe("+93700123456");
     expect(normalizePlate("ab-12 34")).toBe("AB1234");
+  });
+  it("builds customer searches without an empty phone predicate", () => {
+    expect(customerSearchFilter("Amina Khan")).toBe("name_normalized.ilike.%amina khan%");
+    expect(customerSearchFilter("+93 (700) 123-456")).toBe(
+      "name_normalized.ilike.%+93 700 123-456%,phone_normalized.ilike.%+93700123456%",
+    );
+    expect(customerSearchFilter("%_(),")).toBeNull();
   });
   it("accepts shared customer phones and valid vehicle ownership input", () => {
     expect(
