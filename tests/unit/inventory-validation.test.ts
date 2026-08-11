@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isLowStock, partSchema } from "@/features/inventory/validation";
+import { isLowStock, partSchema, stockAdjustmentSchema } from "@/features/inventory/validation";
 describe("inventory rules", () => {
   it("accepts a valid initial part and identifies low stock at its threshold", () => {
     expect(
@@ -30,5 +30,23 @@ describe("inventory rules", () => {
         selling: 0,
       }).success,
     ).toBe(false);
+  });
+  it("accepts restock and signed correction inputs", () => {
+    expect(
+      stockAdjustmentSchema.safeParse({
+        partId: "00000000-0000-4000-8000-000000000000",
+        mode: "restock",
+        quantity: "12",
+        reason: "Delivery received",
+      }).success,
+    ).toBe(true);
+    expect(
+      stockAdjustmentSchema.safeParse({
+        partId: "00000000-0000-4000-8000-000000000000",
+        mode: "correction",
+        quantity: "-2",
+        reason: "Physical count",
+      }).success,
+    ).toBe(true);
   });
 });
