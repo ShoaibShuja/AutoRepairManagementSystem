@@ -17,7 +17,7 @@ Staff sign in at `/login` with their work email and password or a magic link. Th
 ### Front desk
 
 1. Create or find a customer in **Customers**. Search matches normalized customer names and phone digits. Use **Add customer** to open the customer form, then add the customer’s vehicle from their record.
-2. Create an **Appointment** with the customer, vehicle, services, time, and optional technician. Use the edit page when drag-and-drop is not convenient.
+2. Create an **Appointment** with the customer, vehicle, services, time, and optional technician. Use the daily appointment queue to choose a date and status, then open a record to reschedule or update it.
 3. Convert a checked-in appointment to a **Work order**, or create a work order directly. Assign a technician and follow its status through completion.
 4. In **Inventory**, select **Adjust stock** for the relevant part. Add received stock with a positive amount. Administrators can select **Correct count** only when the physical count differs; use a signed amount and always record the reason.
 5. After a work order is completed, create its **Invoice**. Record one full cash or card-in-person payment, or void an unpaid invoice with a reason. Use the browser print command to print or save the invoice as PDF.

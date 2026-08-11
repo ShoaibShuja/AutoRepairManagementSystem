@@ -1,4 +1,5 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/server";
@@ -9,6 +10,7 @@ export type AppointmentActionState = { error?: string; message?: string };
 const value = (data: FormData, name: string) => String(data.get(name) ?? "");
 const status = (value: string) =>
   value as "scheduled" | "checked_in" | "in_progress" | "completed" | "cancelled" | "no_show";
+
 function input(data: FormData) {
   return {
     customerId: value(data, "customerId"),
@@ -22,6 +24,7 @@ function input(data: FormData) {
     overrideConflict: value(data, "overrideConflict") || undefined,
   };
 }
+
 function args(parsed: ReturnType<typeof appointmentSchema.parse>) {
   return {
     target_customer_id: parsed.customerId,
@@ -34,6 +37,7 @@ function args(parsed: ReturnType<typeof appointmentSchema.parse>) {
     allow_conflict: parsed.overrideConflict === "true",
   };
 }
+
 export async function saveAppointment(
   _: AppointmentActionState,
   formData: FormData,
@@ -41,8 +45,9 @@ export async function saveAppointment(
   const staff = await requireRole(["admin", "front_desk"]);
   const parsed = appointmentSchema.safeParse(input(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  if (parsed.data.overrideConflict && staff.role !== "admin")
+  if (parsed.data.overrideConflict && staff.role !== "admin") {
     return { error: "Only an administrator can override a technician conflict." };
+  }
   const appointmentId = value(formData, "appointmentId") || null;
   const { data, error } = await (
     await createClient()
@@ -51,31 +56,18 @@ export async function saveAppointment(
     expected_revision: parsed.data.revision ?? null,
     ...args(parsed.data),
   });
-  if (error)
+  if (error) {
     return {
-      error: "Appointment could not be saved. Check for technician conflicts or refresh the calendar.",
+      error:
+        "Appointment could not be saved. Check for technician conflicts or refresh the appointment list.",
     };
+  }
   if (!appointmentId) redirect(`/appointments/${data}`);
   revalidatePath("/appointments");
   revalidatePath(`/appointments/${appointmentId}`);
   return { message: "Appointment saved." };
 }
-export async function rescheduleAppointment(id: string, startsAt: string, endsAt: string, revision: number) {
-  await requireRole(["admin", "front_desk"]);
-  const { error } = await (
-    await createClient()
-  ).rpc("reschedule_appointment", {
-    target_appointment_id: id,
-    target_starts_at: startsAt,
-    target_ends_at: endsAt,
-    expected_revision: revision,
-    allow_conflict: false,
-  });
-  if (error)
-    return { error: "Reschedule was not saved. The technician may be busy or this appointment changed." };
-  revalidatePath("/appointments");
-  return { message: "Appointment rescheduled." };
-}
+
 export async function transitionAppointment(formData: FormData) {
   await requireRole(["admin", "front_desk"]);
   const id = value(formData, "appointmentId");
@@ -89,6 +81,7 @@ export async function transitionAppointment(formData: FormData) {
   revalidatePath("/appointments");
   revalidatePath(`/appointments/${id}`);
 }
+
 export async function convertAppointment(formData: FormData) {
   await requireRole(["admin", "front_desk"]);
   const id = value(formData, "appointmentId");
