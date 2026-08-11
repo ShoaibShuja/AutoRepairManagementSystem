@@ -60,6 +60,7 @@ Do not casually change applied migration files, invoice sequence fields, the cur
 - `src/types/`: maintained Supabase database types.
 - `supabase/migrations/`: append-only database and Storage changes.
 - `supabase/seed.sql`: synthetic local catalog and inventory seed only.
+- `supabase/demo-seed.sql`: larger, SQL Editor-ready fictional dataset for local or non-production demos. It must never be run against production or real customer data.
 - `tests/`: Vitest unit/component tests and Playwright foundations.
 - `docs/`: durable operating and implementation documentation.
 
