@@ -2,8 +2,8 @@
 
 Last updated: 2026-07-20
 Current phase: Version 1 staging-release verification
-Current branch: codex/simplify-money-inputs
-Current status: The version 1 release candidate, premium dashboard refinement, customer-directory UI refinement, and customer-search fix were merged to `main`. This branch simplifies staff money entry and display with no database changes; production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
+Current branch: codex/simplify-inventory-adjustments
+Current status: The version 1 release candidate, premium dashboard refinement, customer-directory UI refinement, customer-search fix, and simplified money inputs were merged to `main`. This branch simplifies inventory adjustments with no database changes; production deployment remains blocked until staging migration/RLS/Storage, browser acceptance, hosted Auth/SMTP, backup, and restore gates pass.
 
 ## Working Features
 
@@ -51,6 +51,7 @@ Current status: The version 1 release candidate, premium dashboard refinement, c
 
 ## Recent Changes
 
+- Replaced cluttered per-row inventory forms with a focused Adjust stock dialog. Front desk can add received stock; administrators can record signed, reason-required physical-count corrections. Both paths continue to create immutable inventory movements through the existing authorized RPCs.
 - Simplified service and inventory price entry to normal AFN whole or decimal amounts and formatted catalog prices on the work-order form. Server actions convert valid staff input to exact integer minor units before database operations; whole amounts display without an unnecessary `.00` suffix.
 - Fixed customer search so name-only input no longer expands into an empty phone predicate that matches the full phone directory. Search terms are normalized and special wildcard syntax is removed before the authorized database query.
 - Reworked the customer directory with a primary add-customer dialog, a count-aware responsive record list, richer contact and activity details, and improved touch-sized search controls. Existing role guards, server validation, archive behavior, and customer search semantics are unchanged.

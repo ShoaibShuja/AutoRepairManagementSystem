@@ -17,6 +17,12 @@ export const partSchema = z.object({
   cost: z.number().int().min(0).nullable(),
   selling: z.number().int().min(0),
 });
+export const stockAdjustmentSchema = z.object({
+  partId: z.string().uuid(),
+  mode: z.enum(["restock", "correction"]),
+  quantity: z.coerce.number().finite(),
+  reason: z.string().trim().max(500),
+});
 export function isLowStock(quantity: number, threshold: number) {
   return quantity <= threshold;
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Supabase table types are regenerated after local reset. */
 import { CurrencyDisplay, EmptyState, PageHeader, StatusBadge } from "@/components/operational";
-import { correctInventoryForm, restockPartForm } from "@/features/inventory/actions";
 import { PartForm } from "@/features/inventory/part-form";
+import { StockAdjustmentDialog } from "@/features/inventory/stock-adjustment-dialog";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
 const pageSize = 25;
@@ -41,7 +41,7 @@ export default async function InventoryPage({
       <PageHeader
         eyebrow="Inventory"
         title="Parts and supplies"
-        description="Stock changes are immutable movements. Low stock means on-hand quantity is at or below its threshold."
+        description="Use Adjust stock to add received parts or record an authorized physical-count correction. Every change remains in the inventory ledger."
       />
       {filters.create === "1" ? (
         <PartForm admin={staff.role === "admin"} />
@@ -93,6 +93,9 @@ export default async function InventoryPage({
                 <th className="p-3">Threshold</th>
                 <th className="p-3">Selling price</th>
                 <th className="p-3">Status</th>
+                <th className="p-3 text-right">
+                  <span className="sr-only">Stock action</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -107,47 +110,18 @@ export default async function InventoryPage({
                   </td>
                   <td className="p-3">
                     {String(part.quantity_on_hand)} {String(part.unit)}
-                    <form action={restockPartForm} className="mt-2 flex gap-1">
-                      <input name="partId" type="hidden" value={part.id as string} />
-                      <input
-                        className="h-7 w-16 rounded border px-1"
-                        min="0.001"
-                        name="quantity"
-                        placeholder="Qty"
-                        required
-                        step="0.001"
-                        type="number"
-                      />
-                      <input
-                        className="h-7 w-24 rounded border px-1"
-                        name="reason"
-                        placeholder="Restock note"
-                      />
-                      <button className="text-xs font-medium underline">Restock</button>
-                    </form>
-                    {staff.role === "admin" ? (
-                      <form action={correctInventoryForm} className="mt-1 flex gap-1">
-                        <input name="partId" type="hidden" value={part.id as string} />
-                        <input
-                          className="h-7 w-16 rounded border px-1"
-                          name="quantity"
-                          placeholder="±Qty"
-                          required
-                          step="0.001"
-                          type="number"
-                        />
-                        <input
-                          className="h-7 w-24 rounded border px-1"
-                          name="reason"
-                          placeholder="Correction reason"
-                          required
-                        />
-                        <button className="text-xs font-medium text-destructive underline">Correct</button>
-                      </form>
-                    ) : null}
                   </td>
                   <td className="p-3">
                     {String(part.reorder_threshold)} {String(part.unit)}
+                  </td>
+                  <td className="p-3 text-right">
+                    <StockAdjustmentDialog
+                      admin={staff.role === "admin"}
+                      partId={part.id as string}
+                      partName={part.name as string}
+                      quantity={Number(part.quantity_on_hand)}
+                      unit={String(part.unit)}
+                    />
                   </td>
                   <td className="p-3">
                     <CurrencyDisplay amount={Number(part.sell_price_minor)} />

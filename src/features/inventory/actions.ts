@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { requireRole, requireStaff } from "@/lib/auth/server";
 import { moneyInputToMinorUnits } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
-import { partSchema } from "./validation";
+import { partSchema, stockAdjustmentSchema } from "./validation";
 export type InventoryActionState = { error?: string; message?: string };
 const value = (data: FormData, name: string) => String(data.get(name) ?? "");
 export async function savePart(_: InventoryActionState, formData: FormData): Promise<InventoryActionState> {
@@ -53,43 +53,50 @@ export async function savePart(_: InventoryActionState, formData: FormData): Pro
   revalidatePath("/inventory");
   return { message: id ? "Part updated." : "Part created with an initial stock movement." };
 }
-export async function restockPart(
+export async function adjustInventory(
   _: InventoryActionState,
   formData: FormData,
 ): Promise<InventoryActionState> {
-  await requireRole(["admin", "front_desk"]);
-  const { error } = await (
-    await createClient()
-  ).rpc("restock_part", {
-    target_part_id: value(formData, "partId"),
-    quantity: Number(value(formData, "quantity")),
-    reason: value(formData, "reason") || null,
-  });
-  if (error) return { error: "Restock could not be recorded." };
-  revalidatePath("/inventory");
-  return { message: "Restock recorded." };
-}
-export async function restockPartForm(formData: FormData) {
-  await restockPart({}, formData);
-}
-export async function correctInventory(
-  _: InventoryActionState,
-  formData: FormData,
-): Promise<InventoryActionState> {
-  await requireRole(["admin"]);
-  const { error } = await (
-    await createClient()
-  ).rpc("correct_inventory", {
-    target_part_id: value(formData, "partId"),
-    quantity_delta: Number(value(formData, "quantity")),
+  const staff = await requireRole(["admin", "front_desk"]);
+  const parsed = stockAdjustmentSchema.safeParse({
+    partId: value(formData, "partId"),
+    mode: value(formData, "mode"),
+    quantity: value(formData, "quantity"),
     reason: value(formData, "reason"),
   });
-  if (error) return { error: "Correction could not be recorded." };
+  if (!parsed.success) return { error: "Enter a valid quantity and a shorter reason." };
+  if (parsed.data.mode === "restock" && parsed.data.quantity <= 0)
+    return { error: "Enter an amount greater than zero to add stock." };
+  if (parsed.data.mode === "correction") {
+    if (staff.role !== "admin") return { error: "Only administrators can correct inventory counts." };
+    if (parsed.data.quantity === 0 || !parsed.data.reason)
+      return { error: "Enter a non-zero correction and explain why the count changed." };
+  }
+  const { error } =
+    parsed.data.mode === "restock"
+      ? await (
+          await createClient()
+        ).rpc("restock_part", {
+          target_part_id: parsed.data.partId,
+          quantity: parsed.data.quantity,
+          reason: parsed.data.reason || null,
+        })
+      : await (
+          await createClient()
+        ).rpc("correct_inventory", {
+          target_part_id: parsed.data.partId,
+          quantity_delta: parsed.data.quantity,
+          reason: parsed.data.reason,
+        });
+  if (error)
+    return {
+      error:
+        parsed.data.mode === "restock"
+          ? "Stock could not be added."
+          : "The inventory correction could not be recorded.",
+    };
   revalidatePath("/inventory");
-  return { message: "Correction recorded." };
-}
-export async function correctInventoryForm(formData: FormData) {
-  await correctInventory({}, formData);
+  return { message: parsed.data.mode === "restock" ? "Stock added." : "Inventory correction recorded." };
 }
 export async function setPartArchived(formData: FormData) {
   await requireRole(["admin", "front_desk"]);
