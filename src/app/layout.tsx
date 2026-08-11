@@ -9,6 +9,12 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
+const themeScript = `try {
+  if (localStorage.getItem("autocare-theme") === "dark") {
+    document.documentElement.classList.add("dark");
+  }
+} catch {}`;
+
 export const metadata: Metadata = {
   title: {
     default: "AutoCare Pro",
@@ -19,7 +25,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={geist.variable}>
+    <html lang="en" className={geist.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
