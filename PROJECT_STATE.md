@@ -15,7 +15,7 @@ Current status: The version 1 release candidate, premium dashboard refinement, c
 - Shared operational display, form, filter, search, table, pagination, responsive record-card, status, and accessible confirmation-dialog primitives.
 - Customer and vehicle records, archive/restore workflows, normalized name/phone/plate search, and a role-safe service catalog baseline.
 - Work-order creation with server-captured catalog service snapshots, controlled transitions, concise activity history, technician workspace, and vehicle work history.
-- Staff-managed appointment calendar with day/week interaction, mobile agenda, technician conflict controls, rescheduling, and work-order conversion.
+- Staff-managed daily appointment queue with date/status controls, responsive records, technician conflict controls, rescheduling through appointment editing, and work-order conversion.
 - Immutable inventory movements, low-stock visibility, restock/correction operations, and confirmed work-order part usage with safe reversals.
 - Offline invoices with database-generated numbering, service/part snapshots, payment and void lifecycle, and browser print-to-PDF layout.
 - Role-scoped daily dashboard metrics and date-range essential operations reports.
