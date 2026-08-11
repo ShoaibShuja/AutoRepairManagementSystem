@@ -10,8 +10,8 @@ describe("inventory rules", () => {
         unit: "each",
         quantity: "10",
         threshold: "3",
-        cost: "100",
-        selling: "200",
+        cost: 10000,
+        selling: 20000,
       }).success,
     ).toBe(true);
     expect(isLowStock(3, 3)).toBe(true);
@@ -26,8 +26,8 @@ describe("inventory rules", () => {
         unit: "each",
         quantity: "-1",
         threshold: "0",
-        cost: "",
-        selling: "0",
+        cost: null,
+        selling: 0,
       }).success,
     ).toBe(false);
   });

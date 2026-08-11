@@ -14,14 +14,8 @@ export const partSchema = z.object({
   unit: z.string().trim().min(1).max(30),
   quantity: z.coerce.number().min(0),
   threshold: z.coerce.number().min(0),
-  cost: z.coerce
-    .number()
-    .int()
-    .min(0)
-    .optional()
-    .or(z.literal(""))
-    .transform((value) => (value === "" ? null : value)),
-  selling: z.coerce.number().int().min(0),
+  cost: z.number().int().min(0).nullable(),
+  selling: z.number().int().min(0),
 });
 export function isLowStock(quantity: number, threshold: number) {
   return quantity <= threshold;
