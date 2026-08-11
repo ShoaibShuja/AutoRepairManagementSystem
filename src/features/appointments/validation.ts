@@ -18,7 +18,10 @@ export const appointmentSchema = z
       .max(4000)
       .transform((value) => value || null),
     serviceIds: z.array(z.string().uuid()).min(1, "Select at least one requested service."),
-    revision: z.coerce.number().int().positive().optional(),
+    revision: z.preprocess(
+      (value) => (value === "" || value === null ? undefined : value),
+      z.coerce.number().int().positive().optional(),
+    ),
     overrideConflict: z.literal("true").optional(),
   })
   .refine((value) => new Date(value.endsAt) > new Date(value.startsAt), {
