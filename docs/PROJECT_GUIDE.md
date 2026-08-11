@@ -1,8 +1,8 @@
-# AutoCare Pro Project Guide
+# Hashimi Pro Project Guide
 
 ## What this system does
 
-AutoCare Pro is a staff-only system for one car wash and auto repair shop. It records customers and vehicles, schedules appointments, manages work orders and parts, tracks stock, creates offline invoices, and shows basic operational reports. It does not provide online payments, customer accounts, public bookings, multi-location support, SMS, or marketing automation.
+Hashimi Pro is a staff-only system for one car wash and auto repair shop. It records customers and vehicles, schedules appointments, manages work orders and parts, tracks stock, creates offline invoices, and shows basic operational reports. It does not provide online payments, customer accounts, public bookings, multi-location support, SMS, or marketing automation.
 
 ## Who uses it
 

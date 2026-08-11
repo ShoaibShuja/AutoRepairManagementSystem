@@ -1,4 +1,4 @@
-# AutoCare Pro Implementation Blueprint
+# Hashimi Pro Implementation Blueprint
 
 > Historical planning reference. Current implemented behavior and release procedures are authoritative in `PROJECT_STATE.md` and `docs/PROJECT_GUIDE.md`.
 

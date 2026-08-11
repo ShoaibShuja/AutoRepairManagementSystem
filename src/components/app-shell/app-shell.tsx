@@ -9,7 +9,14 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/features/auth/actions";
 import type { StaffRole } from "@/lib/auth/permissions";
+import { appConfig } from "@/config/app";
 import { cn } from "@/lib/utils";
+
+const roleLabels: Record<StaffRole, string> = {
+  admin: "Admin",
+  front_desk: "Front desk",
+  technician: "Technician",
+};
 
 export function AppShell({
   children,
@@ -25,7 +32,7 @@ export function AppShell({
         <span className="grid size-9 place-items-center rounded-xl bg-brand-primary text-brand-primary-foreground shadow-[0_8px_20px_color-mix(in_oklab,var(--brand-primary),transparent_72%)]">
           <Wrench aria-hidden="true" className="size-4" />
         </span>
-        <span className="font-semibold tracking-[-0.03em]">AutoCare Pro</span>
+        <span className="font-semibold tracking-[-0.03em]">{appConfig.name}</span>
       </div>
       <nav aria-label="Primary navigation" className="flex-1 space-y-1 p-3">
         {navigation.map(({ href, icon: Icon, label }) => {
@@ -127,14 +134,15 @@ export function AppShell({
                   {staff.display_name.slice(0, 2).toUpperCase()}
                 </span>
                 <span className="hidden max-w-36 truncate sm:block">{staff.display_name}</span>
+                <span className="hidden rounded-full border border-border/80 bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground sm:inline-flex">
+                  {roleLabels[staff.role]}
+                </span>
               </summary>
               <div className="absolute right-0 top-[calc(100%+0.5rem)] w-64 rounded-xl border bg-card p-2 shadow-lg">
                 <div className="border-b px-2 py-2 text-sm">
                   <p className="truncate font-medium">{staff.display_name}</p>
                   <p className="truncate text-xs text-muted-foreground">{staff.email}</p>
-                  <p className="mt-1 text-xs capitalize text-muted-foreground">
-                    {staff.role.replace("_", " ")}
-                  </p>
+                  <p className="mt-1 text-xs capitalize text-muted-foreground">{roleLabels[staff.role]}</p>
                 </div>
                 <form action={signOut} className="pt-2">
                   <button

@@ -67,6 +67,7 @@ describe("authenticated UI foundation", () => {
         <p>Content</p>
       </AppShell>,
     );
+    expect(screen.getAllByText("Admin")[0]).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Open navigation menu" }));
     expect(screen.getByRole("dialog", { name: "Navigation menu" })).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Close navigation menu" }));

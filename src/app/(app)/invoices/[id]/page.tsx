@@ -4,6 +4,7 @@ import { CurrencyDisplay, PageHeader, StatusBadge } from "@/components/operation
 import { recordPayment, voidInvoice } from "@/features/invoicing/actions";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
+import { appConfig } from "@/config/app";
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   await requireRole(["admin", "front_desk"]);
   const { id } = await params;
@@ -28,7 +29,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       <div className="mt-6 space-y-5 rounded-lg border bg-card p-6 print:border-0">
         <div className="flex justify-between">
           <div>
-            <h2 className="font-semibold">AutoCare Pro</h2>
+            <h2 className="font-semibold">{appConfig.name}</h2>
             <p className="text-sm">
               {invoice.work_orders?.customers?.full_name} · {invoice.work_orders?.vehicles?.plate_number}
             </p>

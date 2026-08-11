@@ -1,4 +1,4 @@
--- AutoCare Pro demo data for a local or non-production Supabase project.
+-- Hashimi Pro demo data for a local or non-production Supabase project.
 -- All names, emails, phones, VINs, locations, and notes below are fictional.
 -- Do not run this in production or alongside real customer records.
 --

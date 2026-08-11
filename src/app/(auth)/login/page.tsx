@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LoginForm } from "@/features/auth/login-form";
 import { getCurrentStaff } from "@/lib/auth/server";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { appConfig } from "@/config/app";
 
 export default async function LoginPage() {
   if (await getCurrentStaff()) redirect("/dashboard");
@@ -18,7 +19,7 @@ export default async function LoginPage() {
             <Wrench className="size-5" aria-hidden="true" />
           </div>
           <div>
-            <p className="font-semibold">AutoCare Pro</p>
+            <p className="font-semibold">{appConfig.name}</p>
             <p className="text-sm text-muted-foreground">Staff workspace</p>
           </div>
         </div>
