@@ -13,6 +13,7 @@ describe("appointment scheduling rules", () => {
         endsAt: "2026-07-20T05:30:00.000Z",
         notes: "",
         serviceIds: [id],
+        revision: "",
       }).success,
     ).toBe(true);
     expect(

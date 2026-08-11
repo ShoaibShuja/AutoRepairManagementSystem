@@ -51,6 +51,7 @@ Current status: The version 1 release candidate, premium dashboard refinement, c
 
 ## Recent Changes
 
+- Appointment creation now treats its blank optimistic-revision field as absent, so leaving optional technician and notes fields empty does not produce an unrelated number-validation error. Customer, vehicle, times, and at least one requested service remain required.
 - Replaced cluttered per-row inventory forms with a focused Adjust stock dialog. Front desk can add received stock; administrators can record signed, reason-required physical-count corrections. Both paths continue to create immutable inventory movements through the existing authorized RPCs.
 - Simplified service and inventory price entry to normal AFN whole or decimal amounts and formatted catalog prices on the work-order form. Server actions convert valid staff input to exact integer minor units before database operations; whole amounts display without an unnecessary `.00` suffix.
 - Fixed customer search so name-only input no longer expands into an empty phone predicate that matches the full phone directory. Search terms are normalized and special wildcard syntax is removed before the authorized database query.
